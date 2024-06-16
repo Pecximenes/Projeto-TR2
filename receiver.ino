@@ -72,7 +72,7 @@ void httpPostTankLevel(String tankLevel, byte tankAddr) {
 
     DynamicJsonDocument contentJson(2048);
     contentJson["level"] = tankLevel;
-    contentJson["tank"] = "0x" + String(tankAddr, HEX)
+    contentJson["address"] = "0x" + String(tankAddr, HEX)
     String body;
     serializeJson(contentJson, body);
 
