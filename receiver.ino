@@ -4,8 +4,8 @@
 #include <LoRa.h>
 
 #include <ArduinoJson.h>
-#include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
+#include <WiFi.h>
+#include <HTTPClient.h>
 
 const int csPin = 10;  // Chip Select para o protocolo SPI
 const int resetPin = 0; // Pin de reset do modulo
