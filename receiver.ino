@@ -13,22 +13,24 @@ const int irqPin = 4;  // Pin DI0
 
 byte localAddr = 0xBA;
 
-const char* ssidWifi = "";
-const char* passWifi = "";
+const char* ssidWifi = "";  // identificador da wifi
+const char* passWifi = "";  // senha da wifi
 
 void setup() {
+    // setup da serial
     Serial.begin(9600);
     while(!Serial);
     Serial.println("Serial iniciada com sucesso");
 
+    // setup do lora
     LoRa.setPins(csPin, resetPin, irqPin);
-
     if (!LoRa.begin(915E6)) {
         Serial.println("Erro ao iniciar o modulo LoRa");
         while(1);
     }
     Serial.println("Modulo LoRa iniciado com sucesso");
 
+    // setup da wifi
     WiFi.begin(ssidWifi, passWifi);
     while(WiFi.status() != WL_CONNECTED) {
         Serial.println("Conectando com a WiFi...");
