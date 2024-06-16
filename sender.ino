@@ -1,9 +1,9 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-const int csPin = 10;
-const int resetPin = 0;
-const int irqPin = 4;
+const int csPin = 10;  // Chip Select para o protocolo SPI
+const int resetPin = 0; // Pin de reset do modulo
+const int irqPin = 4;  // Pin DI0
 
 byte localAddr = 0xBB;
 byte destAddr = 0XFF;
