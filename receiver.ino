@@ -54,6 +54,7 @@ void loop() {
             content += (char)LoRa.read();
             // contentInt = content.toInt();
         }
+
         if (contentLength != content.length()) {
             Serial.println("Mensagem corrompida recebida");
             return;
