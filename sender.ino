@@ -7,7 +7,6 @@ const int irqPin = 4;
 
 byte localAddr = 0xBB;
 byte destAddr = 0XFF;
-long lastSendTime = 0;
 int timeout = 1000;
 
 void setup() {

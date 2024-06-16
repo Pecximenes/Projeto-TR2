@@ -1,15 +1,11 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-const int csPin = 10;
-const int resetPin = 0;
-const int irqPin = 4;
-
-String msgToSend;
+const int csPin = 10;  // Chip Select para o protocolo SPI
+const int resetPin = 0; // Pin de reset do modulo
+const int irqPin = 4;  // Pin DI0
 
 byte localAddr = 0xBA;
-byte destination = 0XFF;
-long lastSendTime = 0;
 
 void setup() {
     Serial.begin(9600);
@@ -46,6 +42,7 @@ void loop() {
         }
         LoRa.packetRssi();
 
-        // ...logica para enviar ao servidor web o content
+        // ...logica para enviar ao servidor web o content e o senderAddr
+        Serial.println("Nivel de tanque " + content + " recebido do transmissor 0x" + String(senderAddr, HEX));
     }
 }
