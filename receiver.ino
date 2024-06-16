@@ -23,11 +23,11 @@ void setup() {
 
 void loop() {
     if (LoRa.parsePacket()) {
-        int receiverAddr = LoRa.read();
-        int senderAddr = LoRa.read();
         int contentLength = LoRa.read();
+        byte receiverAddr = LoRa.read();
+        byte senderAddr = LoRa.read();
 
-        if (receiverAddr != localAddr && receiverAddr != 0xFF) {
+        if (receiverAddr != localAddr) {
             return;
         }
 

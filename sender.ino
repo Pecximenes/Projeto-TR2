@@ -6,7 +6,7 @@ const int resetPin = 0; // Pin de reset do modulo
 const int irqPin = 4;  // Pin DI0
 
 byte localAddr = 0xBB;
-byte destAddr = 0XFF;
+byte destAddr = 0XBA;
 int timeout = 1000;
 
 void setup() {
@@ -28,9 +28,9 @@ void loop() {
 
     String tankLevel = "100";
     LoRa.beginPacket();
+    LoRa.write(tankLevel.length());  // tamanho do conteudo do pacote LoRa
     LoRa.write(destAddr);  // endereco do modulo de destino
     LoRa.write(localAddr);  // endereco local do modulo transmissor
-    LoRa.write(tankLevel.length());  // tamanho do conteudo do pacote LoRa
     LoRa.print(tankLevel); // conteudo do pacote LoRa
     LoRa.endPacket();
     delay(timeout);  // timeout para enviar o proximo nivel
