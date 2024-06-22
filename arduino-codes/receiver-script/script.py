@@ -13,17 +13,13 @@ while True:
 
         # Enviar dados para o servidor
         data = {"id": gateway_id,
-                "tanks": [
-                    {
-                        "id": tank_id,
-                        "levels": [
-                            {
-                                "level": tank_level,
-                                "caught_at": datetime.now()
-                            }
-                        ]
+                "tanks": {
+                    "id": tank_id,
+                    "levels": {
+                        "level": tank_level,
+                        "caught_at": datetime.now()
                     }
-                ]
+                }
         }
         response = requests.post("http://localhost:3001/api/tank/update-level", data=data)
         print(response.text)
