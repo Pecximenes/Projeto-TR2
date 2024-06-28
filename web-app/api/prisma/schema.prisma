@@ -9,3 +9,43 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Gateway {
+  id          String  @id @default(cuid())
+  address     String? @unique
+  description String?
+  tanks       Tank[]
+
+  @@map("gateways")
+}
+
+model Tank {
+  id          String      @id @default(cuid())
+  address     String?     @unique
+  description String?
+  Gateway     Gateway?    @relation(fields: [gatewayId], references: [id])
+  gatewayId   String?
+  levels      TankLevel[]
+
+  @@map("tanks")
+}
+
+model TankLevel {
+  id       String   @id @default(cuid())
+  level    Int
+  caughtAt DateTime @default(now())
+  Tank     Tank?    @relation(fields: [tankId], references: [id])
+  tankId   String?
+
+  @@map("tank_levels")
+}
