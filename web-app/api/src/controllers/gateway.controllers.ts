@@ -63,6 +63,18 @@ export class GatewayControllerPrisma implements GatewayController {
     return gatewayCreated;
   }
   async updateOne(data: GatewayUpdateOne, id: string): Promise<GatewayGetOne> {
+    const DataSchema = z.custom<GatewayUpdateOne>(async (data) => {
+      if (data.arduinoId) {
+        const existsTankWithThisArduinoId = await db.tank.count({
+          where: { arduinoId: data.arduinoId },
+        });
+        return !existsTankWithThisArduinoId;
+      }
+      return true;
+    });
+
+    DataSchema.parse(data);
+
     const updatedGateway = await db.gateway.update({
       data,
       where: { id },
