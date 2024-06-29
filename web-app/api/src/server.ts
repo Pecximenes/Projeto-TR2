@@ -1,5 +1,10 @@
 import fastify, { type FastifyInstance } from "fastify";
-import { gatewayRoutes, tankRoutes, userRoutes } from "./routes/index.js";
+import {
+  gatewayRoutes,
+  tankLevelRoutes,
+  tankRoutes,
+  userRoutes,
+} from "./routes/index.js";
 
 const app: FastifyInstance = fastify({
   logger: {
@@ -13,6 +18,7 @@ try {
   app.register(userRoutes, { prefix: "/users" });
   app.register(gatewayRoutes, { prefix: "/gateways" });
   app.register(tankRoutes, { prefix: "/tanks" });
+  app.register(tankLevelRoutes, { prefix: "/tanklevels" });
 
   await app.listen({
     host: "0.0.0.0",
