@@ -1,4 +1,4 @@
-type Gateway = {
+type GatewayGetOne = {
   id: string;
   name: string;
   address: string | null;
@@ -25,10 +25,23 @@ type GatewayUpdateOne = {
   tanks?: { id: string }[];
 };
 
+type GatewayGetAll = {
+  id: string;
+  name: string;
+  address: string | null;
+  description: string | null;
+}[];
+
 type GatewayController = {
-  getByName(name: string): Promise<Gateway>;
-  create(data: GatewayCreate): Promise<Gateway>;
-  updateOne(data: GatewayUpdateOne): Promise<Gateway>;
+  getAll(): Promise<GatewayGetAll>;
+  getOneById(id: string): Promise<GatewayGetOne>;
+  create(data: GatewayCreate): Promise<GatewayGetOne>;
+  updateOne(data: GatewayUpdateOne): Promise<GatewayGetOne>;
 };
 
-export type { Gateway, GatewayCreate, GatewayUpdateOne, GatewayController };
+export type {
+  GatewayGetOne,
+  GatewayCreate,
+  GatewayUpdateOne,
+  GatewayController,
+};
