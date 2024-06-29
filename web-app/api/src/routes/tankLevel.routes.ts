@@ -5,7 +5,7 @@ import type {
 } from "../interfaces/tankLevel.intefaces.js";
 import { TankLevelControllerPrisma } from "../controllers/tankLevel.controller.js";
 
-export function tankLevelRoutes(fastify: FastifyInstance) {
+export async function tankLevelRoutes(fastify: FastifyInstance) {
   const tankLevelController: TankLevelController =
     new TankLevelControllerPrisma();
 
