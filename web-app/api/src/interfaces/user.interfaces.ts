@@ -13,4 +13,4 @@ type UserController = {
   create(data: UserCreate): Promise<User>;
 };
 
-export { User, UserCreate, UserController };
+export type { User, UserCreate, UserController };
