@@ -6,6 +6,11 @@ type GatewayGetAll = {
   description: string | null;
 }[];
 
+type GatewayGetAllInfoless = {
+  id: string;
+  name: string;
+}[];
+
 type GatewayGetOne = {
   id: string;
   arduinoId: number;
@@ -35,18 +40,13 @@ type GatewayUpdateOne = {
   description?: string;
 };
 
-type GatewayGetAllInfoless = {
-  id: string;
-  name: string;
-}[];
-
 type GatewayController = {
   getAll(): Promise<GatewayGetAll>;
-  getOneByArduinoId(arduinoId: number): Promise<GatewayGetOne>;
-  create(data: GatewayCreate): Promise<GatewayGetOne>;
-  updateOne(data: GatewayUpdateOne): Promise<GatewayGetOne>;
-  deleteOneByArduinoId(arduinoId: number): Promise<GatewayGetOne>;
   getAllInfoless(): Promise<GatewayGetAllInfoless>;
+  getOneById(id: string): Promise<GatewayGetOne | null>;
+  create(data: GatewayCreate): Promise<GatewayGetOne>;
+  updateOne(data: GatewayUpdateOne, id: string): Promise<GatewayGetOne>;
+  deleteOne(id: string): Promise<GatewayGetOne>;
 };
 
 export type {
