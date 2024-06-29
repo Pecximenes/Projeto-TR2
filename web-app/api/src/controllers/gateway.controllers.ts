@@ -37,14 +37,13 @@ export class GatewayControllerPrisma implements GatewayController {
     return gateway;
   }
   async create(data: GatewayCreate): Promise<GatewayGetOne> {
-    const DataSchema = z.custom<GatewayCreate>(async (data) => {
+    const DataSchema = z.custom<GatewayCreate>().refine(async (data) => {
       const existsTankWithThisArduinoId = await db.tank.count({
         where: { arduinoId: data.arduinoId },
       });
       return !existsTankWithThisArduinoId;
     });
-
-    DataSchema.parse(data);
+    await DataSchema.parseAsync(data);
 
     const gatewayCreated = await db.gateway.create({
       data,
@@ -63,7 +62,7 @@ export class GatewayControllerPrisma implements GatewayController {
     return gatewayCreated;
   }
   async updateOne(data: GatewayUpdateOne, id: string): Promise<GatewayGetOne> {
-    const DataSchema = z.custom<GatewayUpdateOne>(async (data) => {
+    const DataSchema = z.custom<GatewayUpdateOne>().refine(async (data) => {
       if (data.arduinoId) {
         const existsTankWithThisArduinoId = await db.tank.count({
           where: { arduinoId: data.arduinoId },
@@ -72,8 +71,7 @@ export class GatewayControllerPrisma implements GatewayController {
       }
       return true;
     });
-
-    DataSchema.parse(data);
+    await DataSchema.parseAsync(data);
 
     const updatedGateway = await db.gateway.update({
       data,

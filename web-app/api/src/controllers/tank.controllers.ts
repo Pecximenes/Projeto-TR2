@@ -35,15 +35,14 @@ export class TankControllerPrisma implements TankController {
     return tank;
   }
   async create(data: TankCreate): Promise<TankGetOne> {
-    const DataSchema = z.custom<TankCreate>(async (data) => {
+    const DataSchema = z.custom<TankCreate>().refine(async (data) => {
       const existsGatewayWithThisArduinoId = await db.gateway.count({
         where: { arduinoId: data.arduinoId },
       });
 
       return !existsGatewayWithThisArduinoId;
     });
-
-    DataSchema.parse(data);
+    await DataSchema.parseAsync(data);
 
     const createdTank = await db.tank.create({
       data,
@@ -71,7 +70,7 @@ export class TankControllerPrisma implements TankController {
     return createdTank;
   }
   async updateOne(data: TankUpdateOne, id: string): Promise<TankGetOne> {
-    const DataSchema = z.custom<TankUpdateOne>(async (data) => {
+    const DataSchema = z.custom<TankUpdateOne>().refine(async (data) => {
       if (data.arduinoId) {
         const existsGatewayWithThisArduinoId = await db.gateway.count({
           where: { arduinoId: data.arduinoId },
@@ -79,11 +78,9 @@ export class TankControllerPrisma implements TankController {
 
         return !existsGatewayWithThisArduinoId;
       }
-
       return true;
     });
-
-    DataSchema.parse(data);
+    await DataSchema.parseAsync(data);
 
     const updatedTank = await db.tank.update({
       data,
