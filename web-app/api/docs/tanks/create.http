@@ -1,0 +1,8 @@
+POST http://0.0.0.0:3001/tanks/create
+Content-Type: application/json
+
+{
+  "arduinoId": 2,
+  "name": "Tanque 2",
+  "gatewayId": "cly0otwr400006w8psn3wm7la"
+}

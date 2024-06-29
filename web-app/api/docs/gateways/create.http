@@ -2,6 +2,6 @@ POST http://0.0.0.0:3001/gateways/create
 Content-Type: application/json
 
 {
-  "arduinoId": 2,
-  "name": "Gateway 2"
+  "arduinoId": 1,
+  "name": "Gateway 1"
 }

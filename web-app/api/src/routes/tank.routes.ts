@@ -23,7 +23,7 @@ export async function tankRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: TankCreate }>("/create", async (request, reply) => {
     try {
       const data = await tankController.create(request.body);
-      return reply.status(200).send(data);
+      return reply.status(201).send(data);
     } catch (error) {
       return reply.status(400).send(error);
     }
