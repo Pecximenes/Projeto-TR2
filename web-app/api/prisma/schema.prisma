@@ -22,6 +22,7 @@ model User {
 
 model Gateway {
   id          String  @id @default(cuid())
+  name        String  @unique
   address     String? @unique
   description String?
   tanks       Tank[]
@@ -31,6 +32,7 @@ model Gateway {
 
 model Tank {
   id          String      @id @default(cuid())
+  name        String      @unique
   address     String?     @unique
   description String?
   Gateway     Gateway?    @relation(fields: [gatewayId], references: [id])
