@@ -1,3 +1,4 @@
+import { z } from "zod";
 import type {
   TankLevel,
   TankLevelController,
@@ -7,6 +8,10 @@ import db from "../lib/db.js";
 
 export class TankLevelControllerPrisma implements TankLevelController {
   async create(data: TankLevelCreate): Promise<TankLevel> {
+    const DataSchema = z.custom<TankLevelCreate>();
+
+    DataSchema.parse(data);
+
     const createdTankLevel = await db.tankLevel.create({
       data: {
         level: data.level,
