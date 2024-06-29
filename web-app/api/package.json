@@ -8,7 +8,7 @@
     "email": "paulofvilarimda@gmail.com"
   },
   "license": "ISC",
-  "main": "index.js",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",

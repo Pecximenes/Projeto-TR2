@@ -22,6 +22,7 @@ model User {
 
 model Gateway {
   id          String  @id @default(cuid())
+  arduinoId   Int     @unique
   name        String  @unique
   address     String? @unique
   description String?
@@ -32,6 +33,7 @@ model Gateway {
 
 model Tank {
   id          String      @id @default(cuid())
+  arduinoId   Int         @unique
   name        String      @unique
   address     String?     @unique
   description String?
