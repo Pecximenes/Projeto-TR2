@@ -17,17 +17,7 @@ export class TankLevelControllerPrisma implements TankLevelController {
         level: data.level,
         caughtAt: data.caughtAt,
         tank: {
-          connectOrCreate: {
-            where: {
-              arduinoId: data.tank.arduinoId,
-              gateway: { arduinoId: data.tank.gateway.arduinoId },
-            },
-            create: {
-              arduinoId: data.tank.arduinoId,
-              name: `Tanque ${data.tank.arduinoId}`,
-              gateway: { connect: { arduinoId: data.tank.arduinoId } },
-            },
-          },
+          connect: data.tank,
         },
       },
       select: {
@@ -36,6 +26,34 @@ export class TankLevelControllerPrisma implements TankLevelController {
         caughtAt: true,
       },
     });
+
+    // const createdTankLevel = await db.tankLevel.create({
+    //   data: {
+    //     level: data.level,
+    //     caughtAt: data.caughtAt,
+    //     tank: {
+    //       connectOrCreate: {
+    //         where: {
+    //           arduinoId: data.tank.arduinoId,
+    //           gateway: { arduinoId: data.tank.gateway.arduinoId },
+    //         },
+    //         create: {
+    //           arduinoId: data.tank.arduinoId,
+    //           name: `Tanque ${data.tank.arduinoId}`,
+    //           gateway: {
+    //             connectOrCreate: {
+    //               where: { arduinoId: data.tank.gateway.arduinoId },
+    //               create: {
+    //                 arduinoId: data.tank.gateway.arduinoId,
+    //                 name: `Gateway ${data.tank.gateway.arduinoId}`,
+    //               },
+    //             },
+    //           },
+    //         },
+    //       },
+    //     }
+    //   }
+    // })
 
     return createdTankLevel;
   }
