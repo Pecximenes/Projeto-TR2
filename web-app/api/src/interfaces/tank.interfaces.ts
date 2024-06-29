@@ -32,10 +32,10 @@ type TankUpdateOne = {
 };
 
 type TankController = {
-  getOneByArduinoId(arduinoId: number): Promise<TankGetOne>;
+  getOneById(id: string): Promise<TankGetOne | null>;
   create(data: TankCreate): Promise<TankGetOne>;
-  updateOne(data: TankUpdateOne): Promise<TankGetOne>;
-  deleteOneByArduinoId(arduinoId: number): Promise<TankGetOne>;
+  updateOne(data: TankUpdateOne, id: string): Promise<TankGetOne>;
+  deleteOneById(id: string): Promise<TankGetOne>;
 };
 
 export type { TankGetOne, TankCreate, TankUpdateOne, TankController };

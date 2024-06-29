@@ -37,8 +37,8 @@ model Tank {
   name        String      @unique
   address     String?     @unique
   description String?
-  gateway     Gateway?    @relation(fields: [gatewayId], references: [id])
-  gatewayId   String?
+  gateway     Gateway     @relation(fields: [gatewayId], references: [id])
+  gatewayId   String
   levels      TankLevel[]
 
   @@map("tanks")
