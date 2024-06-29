@@ -37,7 +37,7 @@ model Tank {
   name        String      @unique
   address     String?     @unique
   description String?
-  Gateway     Gateway?    @relation(fields: [gatewayId], references: [id])
+  gateway     Gateway?    @relation(fields: [gatewayId], references: [id])
   gatewayId   String?
   levels      TankLevel[]
 
@@ -48,7 +48,7 @@ model TankLevel {
   id       String   @id @default(cuid())
   level    Int
   caughtAt DateTime @default(now())
-  Tank     Tank?    @relation(fields: [tankId], references: [id])
+  tank     Tank?    @relation(fields: [tankId], references: [id])
   tankId   String?
 
   @@map("tank_levels")
