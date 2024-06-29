@@ -20,4 +20,4 @@ type TankLevelController = {
   deleteOne(id: string): Promise<TankLevel>;
 };
 
-export type { TankLevelController };
+export type { TankLevel, TankLevelCreate, TankLevelController };
