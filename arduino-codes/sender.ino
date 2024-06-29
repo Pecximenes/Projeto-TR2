@@ -6,9 +6,11 @@ const int csPin = 10;  // Chip Select para o protocolo SPI
 const int resetPin = 0; // Pin de reset do modulo
 const int irqPin = 4;  // Pin DI0
 
+const int gatewayId = 0;
 const int localId = 1;
-const int destId = 2;
 int timeout = 10000;
+
+String inString = "";    // string de leitura
 
 // Passa como um parâmetro os pinos de trigger(3) e echo(4), respectivamente.
 Ultrasonic ultrasonic(3, 4);
@@ -35,18 +37,45 @@ void setupLoRa() {
     Serial.println("Modulo LoRa iniciado com sucesso");
 }
 
-void loop() {
+bool establishingConnectionRx() {
+    if (LoRa.parsePacket()) {
+        // Lê pacote
+        while (LoRa.available()) {
+            int senderId = LoRa.read();
+            int receiverId = LoRa.read();
+        }
+
+        if (senderId == gatewayId && receiverId == localId) {
+            return true;
+        }
+
+        return false;
+}}
+
+String readTankLevel() {
     // ... logica para pegar o nivel do tanque a partir de um sensor
     distance = ultrasonic.read();
-    Serial.print("Distance in CM: ");
+    Serial.print("Distancia em CM: ");
     Serial.println(distance);
-
     String tankLevel = String(distance);
+
+    return tankLevel;
+}
+
+void loop() {
+    bool connected = false;
+    while (!connected) {
+        connected = establishingConnectionRx();
+        delay(10);
+    }
+    Serial.print("Conexão estabelecida com servidor");
+
+    String tankLevel = readTankLevel();
     if (tankLevel) {
         LoRa.beginPacket();
         LoRa.write(tankLevel.length());  // tamanho do conteudo do pacote LoRa
         LoRa.write(localId);  // endereco local do modulo transmissor
-        LoRa.write(destId);  // endereco do modulo de destino
+        LoRa.write(gatewayId);  // endereco do modulo de destino
         // LoRa.write(millis());  // tempo da captura
         LoRa.print(tankLevel); // conteudo do pacote LoRa
         LoRa.endPacket();

@@ -7,7 +7,10 @@ const int csPin = 10;  // Chip Select para o protocolo SPI
 const int resetPin = 0; // Pin de reset do modulo
 const int irqPin = 4;  // Pin DI0
 
-const int localId = 2;
+const int localId = 0;
+
+const int arraySize = 1; // Tamanho do array
+const int destIdArray[arraySize] = {1}; // Array de id's dos dispositivos de transmissão
 
 void setup() {
     setupSerial();
@@ -30,14 +33,27 @@ void setupLoRa() {
     Serial.println("Modulo LoRa iniciado com sucesso");
 }
 
+void establishingConnectionTx(int destId) {
+    LoRa.beginPacket();
+    LoRa.write(localId);  // endereco local do modulo transmissor
+    LoRa.write(destId);  // endereco do modulo de destino
+    LoRa.endPacket();
+}
+
 void loop() {
+    // Laço que percorre todos os dispositivos transmissores
+    for (int i = 0; i < arraySize; i++) {
+        // antes de tudo devemos estabelecer conexao
+        establishingConnectionTx(i);
+    }
+
     if (LoRa.parsePacket()) {
         int contentLength = LoRa.read();
-        int tankId = LoRa.read();
-        int gatewayId = LoRa.read();
+        int senderId = LoRa.read();
+        int receiverId = LoRa.read();
         // unsigned long caughAt = LoRa.read();
 
-        if (gatewayId != localId) {
+        if (receiverId != localId) {
             return;
         }
 
@@ -52,6 +68,6 @@ void loop() {
         }
         LoRa.packetRssi();
 
-        Serial.println(content + ' ' + tankId + ' ' + gatewayId)
+        Serial.println(content + ' ' + senderId + ' ' + receiverId)
     }
 }
