@@ -18,7 +18,7 @@ export async function tankLevelRoutes(fastify: FastifyInstance) {
     }
   });
   fastify.delete<{ Params: { id: string } }>(
-    "/delete:id",
+    "/delete/:id",
     async (request, reply) => {
       try {
         const data = await tankLevelController.deleteOne(request.params.id);
