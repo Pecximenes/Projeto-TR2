@@ -13,20 +13,20 @@ export default function HomePage() {
         </div>
         <div className="flex flex-col gap-3">
           <SignInButton
-            className="flex max-w-64 items-center justify-center gap-2 rounded border-[1px] p-3 shadow transition-shadow ease-in-out hover:shadow-md"
+            className="flex items-center justify-center gap-2 rounded border-[1px] p-3 shadow transition-shadow ease-in-out hover:shadow-md sm:w-64"
             provider="google"
           >
             <FaGoogle className="fill-red-700" /> Entrar Com Google
           </SignInButton>
           <SignInButton
-            className="flex max-w-64 items-center justify-center gap-2 rounded border-[1px] p-3 shadow transition-shadow ease-in-out hover:shadow-md"
+            className="flex items-center justify-center gap-2 rounded border-[1px] p-3 shadow transition-shadow ease-in-out hover:shadow-md sm:w-64"
             provider="discord"
           >
             <FaDiscord className="fill-sky-600" />
             Entrar Com Discord
           </SignInButton>
           <SignInButton
-            className="flex max-w-64 items-center justify-center gap-2 rounded border-[1px] p-3 shadow transition-shadow ease-in-out hover:shadow-md"
+            className="flex items-center justify-center gap-2 rounded border-[1px] p-3 shadow transition-shadow ease-in-out hover:shadow-md sm:w-64"
             provider="github"
           >
             <FaGithub />
