@@ -4,13 +4,13 @@ import { type Session } from "next-auth";
 
 export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  const token = request.cookies.get("next-auth.session-token");
 
-  if (pathname.startsWith("/dashboard")) {
+  if (pathname.startsWith("/dashboard") && token) {
     const session = (await (
       await fetch(process.env.NEXTAUTH_URL + "/api/auth/session", {
-        method: "GET",
         headers: {
-          ...Object.fromEntries(request.headers),
+          Cookie: `${token.name}=${token.value}`,
         },
       })
     ).json()) as Session;
@@ -20,12 +20,12 @@ export default async function middleware(request: NextRequest) {
       : NextResponse.redirect(getUrlByPath("/"));
   }
 
-  if (pathname === "/") {
+  if (pathname === "/" && token) {
     const session = (await (
       await fetch(process.env.NEXTAUTH_URL + "/api/auth/session", {
         method: "GET",
         headers: {
-          ...Object.fromEntries(request.headers),
+          Cookie: `${token.name}=${token.value}`,
         },
       })
     ).json()) as Session;
