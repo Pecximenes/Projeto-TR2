@@ -15,7 +15,7 @@ export default function DashboardPage() {
   return (
     <>
       <section className="my-8 flex w-full items-center justify-between">
-        <span className="font-light">
+        <span className="hidden font-light md:block">
           Veja os Gateways da UnB e Clique em um Para Ver Mais
         </span>
         <Button>Adicionar Gateway</Button>
@@ -25,7 +25,7 @@ export default function DashboardPage() {
         {mockGateways?.map((gateway) => (
           <Card
             key={gateway.id}
-            className="mt-2 w-80 shadow-md transition-shadow ease-in-out hover:shadow-lg md:w-[48%]"
+            className="mt-2 w-full shadow-md transition-shadow ease-in-out hover:shadow-lg md:w-[48%]"
           >
             <CardHeader>
               <CardTitle>{gateway.name}</CardTitle>
