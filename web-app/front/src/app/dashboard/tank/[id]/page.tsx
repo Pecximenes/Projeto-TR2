@@ -1,8 +1,10 @@
 import { mockTank } from "~/mocks/tanks";
 import { DataTable } from "./_components/dataTable";
 import { columns } from "./_components/dataTable/columns";
+import { unstable_noStore as noStore } from "next/cache";
 
 export default function TankPage({ params }: { params: { id: string } }) {
+  noStore();
   console.log(params);
 
   return (
@@ -15,7 +17,7 @@ export default function TankPage({ params }: { params: { id: string } }) {
         </h1>
       </section>
       <section>
-        <h2 className="text-2xl">Nome: {mockTank.name}</h2>
+        <h2 className="text-2xl">{mockTank.name}</h2>
         <p className="line-clamp-1">{mockTank.description}</p>
       </section>
       <section className="my-8">

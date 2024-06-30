@@ -23,13 +23,13 @@ export default function GatewayPage({ params }: { params: { id: string } }) {
         <Button>Adicionar Tanque</Button>
       </section>
       <section>
-        <h2 className="text-2xl">Nome: {mockGateway.name}</h2>
+        <h2 className="text-2xl">{mockGateway.name}</h2>
         <p className="line-clamp-1">{mockGateway.description}</p>
       </section>
       <section className="my-8">
         <div className="flex items-baseline justify-between">
           <h2 className="text-2xl">Tanques</h2>
-          <span className="ml-4 text-base font-light">
+          <span className="text-base font-light">
             Quantidade total: {mockGateway.tanks.length}
           </span>
         </div>

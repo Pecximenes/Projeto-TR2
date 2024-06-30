@@ -1,12 +1,20 @@
 import Link from "next/link";
 import { SignOutButton } from "./signOutButton";
 import { FaGithub } from "react-icons/fa";
+import Image from "next/image";
 
 export function Navbar() {
   return (
     <nav className="fixed z-20 flex h-14 w-screen items-center justify-between border-b-2 bg-white/90 px-16 shadow backdrop-blur sm:h-16">
       <div className="flex items-center border-r-2 border-black/15 pr-16">
-        <Link href="/dashboard" className="font-semibold">
+        <Link href="/dashboard" className="flex gap-2 font-semibold">
+          <Image
+            src="/unb-logo.svg"
+            alt="logo"
+            width={35}
+            height={35}
+            className=""
+          />
           Universidade de Brasília
         </Link>
       </div>
