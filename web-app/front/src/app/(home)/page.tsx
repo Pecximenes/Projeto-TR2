@@ -11,22 +11,22 @@ export default function HomePage() {
             para navegar para o <span className="font-semibold">dashboard</span>
           </h2>
         </div>
-        <div className="flex flex-col gap-3">
+        <div className="flex w-4/6 flex-col gap-3">
           <SignInButton
-            className="flex items-center justify-center gap-2 rounded border-[1px] p-3 shadow transition-shadow ease-in-out hover:shadow-md sm:w-64"
+            className="flex w-full items-center justify-center gap-2 rounded border-2 p-3 shadow transition-shadow ease-in-out hover:shadow-md"
             provider="google"
           >
             <FaGoogle className="fill-red-700" /> Entrar Com Google
           </SignInButton>
           <SignInButton
-            className="flex items-center justify-center gap-2 rounded border-[1px] p-3 shadow transition-shadow ease-in-out hover:shadow-md sm:w-64"
+            className="w-1fullitems-center flex justify-center gap-2 rounded border-2 p-3 shadow transition-shadow ease-in-out hover:shadow-md"
             provider="discord"
           >
             <FaDiscord className="fill-sky-600" />
             Entrar Com Discord
           </SignInButton>
           <SignInButton
-            className="flex items-center justify-center gap-2 rounded border-[1px] p-3 shadow transition-shadow ease-in-out hover:shadow-md sm:w-64"
+            className="flex w-full items-center justify-center gap-2 rounded border-2 p-3 shadow transition-shadow ease-in-out hover:shadow-md"
             provider="github"
           >
             <FaGithub />
