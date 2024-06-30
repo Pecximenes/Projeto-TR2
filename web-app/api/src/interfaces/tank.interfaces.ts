@@ -5,6 +5,7 @@ type TankGetOne = {
   address: string | null;
   description: string | null;
   gateway: {
+    id: string;
     name: string;
     arduinoId: number;
   };

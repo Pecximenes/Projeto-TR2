@@ -19,6 +19,7 @@ export class TankControllerPrisma implements TankController {
         name: true,
         gateway: {
           select: {
+            id: true,
             name: true,
             arduinoId: true,
           },
@@ -54,6 +55,7 @@ export class TankControllerPrisma implements TankController {
         name: true,
         gateway: {
           select: {
+            id: true,
             name: true,
             arduinoId: true,
           },
@@ -93,6 +95,7 @@ export class TankControllerPrisma implements TankController {
         name: true,
         gateway: {
           select: {
+            id: true,
             name: true,
             arduinoId: true,
           },
@@ -119,6 +122,7 @@ export class TankControllerPrisma implements TankController {
         name: true,
         gateway: {
           select: {
+            id: true,
             name: true,
             arduinoId: true,
           },

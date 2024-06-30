@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SignOutButton } from "./signOutButton";
 import { FaGithub } from "react-icons/fa";
 import Image from "next/image";
+import { buttonVariants } from "~/components/ui/button";
 
 export function Navbar() {
   return (
@@ -40,7 +41,12 @@ export function Navbar() {
           </Link>
         </li>
         <li>
-          <SignOutButton className="ml-2 rounded-md border-2 px-6 py-2 text-black/75 transition-all ease-in-out hover:bg-black/10 hover:text-black">
+          <SignOutButton
+            className={buttonVariants({
+              variant: "secondary",
+              className: "border-2 bg-transparent px-6 hover:bg-slate-600/10",
+            })}
+          >
             Sair
           </SignOutButton>
         </li>

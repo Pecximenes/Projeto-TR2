@@ -2,6 +2,9 @@ import { mockTank } from "~/mocks/tanks";
 import { DataTable } from "./_components/dataTable";
 import { columns } from "./_components/dataTable/columns";
 import { unstable_noStore as noStore } from "next/cache";
+import Link from "next/link";
+import { MoveLeft } from "lucide-react";
+import { buttonVariants } from "~/components/ui/button";
 
 export default function TankPage({ params }: { params: { id: string } }) {
   noStore();
@@ -10,11 +13,22 @@ export default function TankPage({ params }: { params: { id: string } }) {
   return (
     <>
       <section className="my-8 flex w-full items-center justify-between">
-        <h1 className="hidden font-light md:block">
-          Informações Sobre o Tanque de{" "}
-          <span className="font-semibold">ID {mockTank.arduinoId}</span> Para o
-          Arduino
-        </h1>
+        <div className="flex items-center gap-5">
+          <Link
+            href={`/dashboard/gateway/${mockTank.gateway.id}`}
+            className={buttonVariants({
+              variant: "secondary",
+              className: "border-2 bg-transparent px-6 hover:bg-slate-600/10",
+            })}
+          >
+            <MoveLeft className="size-4" />
+          </Link>
+          <h1 className="hidden font-light md:block">
+            Informações Sobre o Tanque de{" "}
+            <span className="font-semibold">ID {mockTank.arduinoId}</span> Para
+            o Arduino
+          </h1>
+        </div>
       </section>
       <section>
         <h2 className="text-2xl">{mockTank.name}</h2>

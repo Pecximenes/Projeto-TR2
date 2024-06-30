@@ -5,6 +5,7 @@ const mockTank = {
   address: "789 Oak St",
   description: "First tank",
   gateway: {
+    id: 1,
     name: "Gateway 1",
     arduinoId: 101,
   },

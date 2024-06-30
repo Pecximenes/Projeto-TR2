@@ -1,6 +1,6 @@
 import { mockGateways } from "~/mocks/gateways";
 
-import { Button, buttonVariants } from "~/components/ui/button";
+import { buttonVariants } from "~/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,6 +10,18 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import Link from "next/link";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
+import { FormCreateGateway } from "./_components/formCreateGateway";
 
 export default function DashboardPage() {
   return (
@@ -18,7 +30,33 @@ export default function DashboardPage() {
         <span className="hidden font-light md:block">
           Veja os Gateways da UnB e Clique em um Para Ver Mais
         </span>
-        <Button>Adicionar Gateway</Button>
+        <Dialog key={1}>
+          <DialogTrigger className={buttonVariants()}>
+            Adicionar Gateway
+          </DialogTrigger>
+          <DialogOverlay className="flex items-center justify-center bg-transparent px-8">
+            <DialogContent className="min-w-[45%] rounded bg-white p-6 shadow">
+              <DialogHeader className="mb-4">
+                <DialogTitle>Adicione um Gateway</DialogTitle>
+                <DialogDescription>
+                  Preencha o formulário abaixo para criar um gateway na
+                  plataforma, antes de configurá-lo no local desejado
+                </DialogDescription>
+              </DialogHeader>
+              <FormCreateGateway />
+              <DialogFooter>
+                <DialogClose
+                  className={buttonVariants({
+                    variant: "secondary",
+                    className: "mt-4 border-2 px-6 hover:bg-slate-600/10",
+                  })}
+                >
+                  Fechar
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </DialogOverlay>
+        </Dialog>
       </section>
       {!mockGateways?.length && <span>Crie um Gateway...</span>}
       <div className="flex flex-col flex-wrap items-center justify-between md:flex-row md:items-start">
