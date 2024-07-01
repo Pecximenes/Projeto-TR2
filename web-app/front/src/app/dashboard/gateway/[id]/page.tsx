@@ -9,10 +9,18 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { FormCreateArduino, MyDialog } from "~/components/app";
-import { mockGateway } from "~/mocks/gateways";
 import { MoveLeft } from "lucide-react";
+import { getGateway } from "~/actions";
 
-export default function GatewayPage({ params }: { params: { id: string } }) {
+export default async function GatewayPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const gateway = await getGateway(params.id);
+
+  if (gateway instanceof Error) return null;
+
   return (
     <>
       <section className="my-8 flex w-full items-center justify-between">
@@ -28,8 +36,8 @@ export default function GatewayPage({ params }: { params: { id: string } }) {
           </Link>
           <h1 className="hidden font-light md:block">
             Informações Sobre o Gateway de{" "}
-            <span className="font-semibold">ID {mockGateway.arduinoId}</span>{" "}
-            Para o Arduino
+            <span className="font-semibold">ID {gateway.arduinoId}</span> Para o
+            Arduino
           </h1>
         </div>
         <MyDialog.Root>
@@ -47,19 +55,19 @@ export default function GatewayPage({ params }: { params: { id: string } }) {
         </MyDialog.Root>
       </section>
       <section>
-        <h2 className="text-2xl">{mockGateway.name}</h2>
-        <p className="line-clamp-1">{mockGateway.description}</p>
+        <h2 className="text-2xl">{gateway.name}</h2>
+        <p className="line-clamp-1">{gateway.description}</p>
       </section>
       <section className="my-8">
         <div className="flex items-baseline justify-between">
           <h2 className="text-2xl">Tanques</h2>
           <span className="text-base font-light">
-            Quantidade total: {mockGateway.tanks.length}
+            Quantidade total: {gateway.tanks.length}
           </span>
         </div>
-        {!!mockGateway && (
+        {!!gateway && (
           <div className="flex flex-col flex-wrap items-center justify-between md:flex-row md:items-start">
-            {mockGateway.tanks.map((tank) => (
+            {gateway.tanks.map((tank) => (
               <Card
                 key={tank.id}
                 className="mt-2 w-full shadow-md transition-shadow ease-in-out hover:shadow-lg md:w-[48%]"

@@ -1,4 +1,5 @@
 import "~/styles/globals.css";
+import { Toaster } from "~/components/ui/toaster";
 
 import { GeistSans } from "geist/font/sans";
 
@@ -18,6 +19,7 @@ export default function RootLayout({
     <html lang="pt-BR" className={`${GeistSans.variable}`}>
       <body className="min-h-screen w-screen overflow-x-hidden antialiased">
         {children}
+        <Toaster />
       </body>
     </html>
   );

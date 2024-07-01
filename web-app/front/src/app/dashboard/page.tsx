@@ -1,5 +1,3 @@
-import { mockGateways } from "~/mocks/gateways";
-
 import { buttonVariants } from "~/components/ui/button";
 import {
   Card,
@@ -11,8 +9,13 @@ import {
 } from "~/components/ui/card";
 import { FormCreateArduino, MyDialog } from "~/components/app";
 import Link from "next/link";
+import { getAllGateways } from "~/actions";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const gateways = await getAllGateways();
+
+  if (gateways instanceof Error) return null;
+
   return (
     <>
       <section className="my-8 flex w-full items-center justify-between">
@@ -33,10 +36,10 @@ export default function DashboardPage() {
           </MyDialog.Content>
         </MyDialog.Root>
       </section>
-      {!mockGateways && <span>Crie um Gateway...</span>}
-      {!!mockGateways && (
+      {!gateways && <span>Crie um Gateway...</span>}
+      {!!gateways && (
         <div className="flex flex-col flex-wrap items-center justify-between md:flex-row md:items-start">
-          {mockGateways.map((gateway) => (
+          {gateways.map((gateway) => (
             <Card
               key={gateway.id}
               className="mt-2 w-full shadow-md transition-shadow ease-in-out hover:shadow-lg md:w-[48%]"

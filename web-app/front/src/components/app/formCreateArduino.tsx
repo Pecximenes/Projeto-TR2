@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { createGateway, createTank, refresh } from "~/actions";
 import { Button } from "~/components/ui/button";
 import {
   Form,
@@ -14,6 +15,7 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
+import { useToast } from "../ui/use-toast";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -29,6 +31,8 @@ export function FormCreateArduino({
   type: "gateway" | "tank";
   gatewayId?: string;
 }) {
+  const { toast } = useToast();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,11 +44,26 @@ export function FormCreateArduino({
   });
 
   function handleSubmit(values: z.infer<typeof formSchema>) {
-    if (type === "tank") {
+    if (type === "tank" && gatewayId) {
       console.log({ ...values, gatewayId });
+      createTank({ ...values, gatewayId }).catch(() =>
+        toast({
+          title: "Erro ao criar tanque",
+          description: "Verifique se passou um ID válido para o Arduino",
+        }),
+      );
+      refresh(`/dashboard/gateway/${gatewayId}}`).catch((error) =>
+        console.error(error),
+      );
     }
     if (type === "gateway") {
-      console.log(values);
+      createGateway(values).catch(() =>
+        toast({
+          title: "Erro ao criar gateway",
+          description: "Verifique se passou um ID válido para o Arduino",
+        }),
+      );
+      refresh("/dashboard").catch((error) => console.error(error));
     }
   }
 
