@@ -1,4 +1,3 @@
-import { DialogContent } from "@radix-ui/react-dialog";
 import Link from "next/link";
 import { buttonVariants } from "~/components/ui/button";
 import {
@@ -9,18 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import {
-  Dialog,
-  DialogClose,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogOverlay,
-  DialogTitle,
-  DialogTrigger,
-} from "~/components/ui/dialog";
+import { FormCreateArduino, MyDialog } from "~/components/app";
 import { mockGateway } from "~/mocks/gateways";
-import { FormCreateTank } from "./_components/formCreateTank";
 import { MoveLeft } from "lucide-react";
 
 export default function GatewayPage({ params }: { params: { id: string } }) {
@@ -43,36 +32,19 @@ export default function GatewayPage({ params }: { params: { id: string } }) {
             Para o Arduino
           </h1>
         </div>
-        <Dialog key={2}>
-          <DialogTrigger className={buttonVariants()}>
-            Adicionar Tanque
-          </DialogTrigger>
-          <DialogOverlay
-            key={2}
-            className="flex items-center justify-center px-8"
-          >
-            <DialogContent className="rounded bg-white p-6 shadow">
-              <DialogHeader className="mb-4">
-                <DialogTitle>Adicione um Tanque</DialogTitle>
-                <DialogDescription>
-                  Preencha o formulário abaixo para criar um tanque na
-                  plataforma, antes de configurá-lo no local desejado
-                </DialogDescription>
-              </DialogHeader>
-              <FormCreateTank gatewayId={params.id} />
-              <DialogFooter>
-                <DialogClose
-                  className={buttonVariants({
-                    variant: "secondary",
-                    className: "mt-4 border-2 px-6 hover:bg-slate-600/10",
-                  })}
-                >
-                  Fechar
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </DialogOverlay>
-        </Dialog>
+        <MyDialog.Root>
+          <MyDialog.Trigger>Adicionar Tanque</MyDialog.Trigger>
+          <MyDialog.Content>
+            <MyDialog.Header>
+              <MyDialog.Title>Adicione um Tanque</MyDialog.Title>
+              <MyDialog.Description>
+                Preencha o formulário abaixo para criar um tanque na plataforma,
+                antes de configurá-lo no local desejado
+              </MyDialog.Description>
+            </MyDialog.Header>
+            <FormCreateArduino type="tank" gatewayId={params.id} />
+          </MyDialog.Content>
+        </MyDialog.Root>
       </section>
       <section>
         <h2 className="text-2xl">{mockGateway.name}</h2>
@@ -85,32 +57,34 @@ export default function GatewayPage({ params }: { params: { id: string } }) {
             Quantidade total: {mockGateway.tanks.length}
           </span>
         </div>
-        <div className="flex flex-col flex-wrap items-center justify-between md:flex-row md:items-start">
-          {mockGateway.tanks.map((tank) => (
-            <Card
-              key={tank.id}
-              className="mt-2 w-full shadow-md transition-shadow ease-in-out hover:shadow-lg md:w-[48%]"
-            >
-              <CardHeader>
-                <CardTitle>{tank.name}</CardTitle>
-                <CardDescription>{tank.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col md:flex-row md:gap-2">
-                <p className="line-clamp-2">
-                  Arduino de ID {tank.arduinoId}, {tank.address}
-                </p>
-              </CardContent>
-              <CardFooter>
-                <Link
-                  href={`/dashboard/tank/${tank.id}`}
-                  className={buttonVariants()}
-                >
-                  Veja Mais
-                </Link>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
+        {!!mockGateway && (
+          <div className="flex flex-col flex-wrap items-center justify-between md:flex-row md:items-start">
+            {mockGateway.tanks.map((tank) => (
+              <Card
+                key={tank.id}
+                className="mt-2 w-full shadow-md transition-shadow ease-in-out hover:shadow-lg md:w-[48%]"
+              >
+                <CardHeader>
+                  <CardTitle>{tank.name}</CardTitle>
+                  <CardDescription>{tank.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col md:flex-row md:gap-2">
+                  <p className="line-clamp-2">
+                    Arduino de ID {tank.arduinoId}, {tank.address}
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Link
+                    href={`/dashboard/tank/${tank.id}`}
+                    className={buttonVariants()}
+                  >
+                    Veja Mais
+                  </Link>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        )}
       </section>
     </>
   );

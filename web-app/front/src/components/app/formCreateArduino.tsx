@@ -22,7 +22,13 @@ const formSchema = z.object({
   address: z.string().min(1).optional(),
 });
 
-export function FormCreateTank({ gatewayId }: { gatewayId: string }) {
+export function FormCreateArduino({
+  type,
+  gatewayId,
+}: {
+  type: "gateway" | "tank";
+  gatewayId?: string;
+}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,7 +40,12 @@ export function FormCreateTank({ gatewayId }: { gatewayId: string }) {
   });
 
   function handleSubmit(values: z.infer<typeof formSchema>) {
-    console.log({ ...values, gatewayId });
+    if (type === "tank") {
+      console.log({ ...values, gatewayId });
+    }
+    if (type === "gateway") {
+      console.log(values);
+    }
   }
 
   return (
@@ -50,7 +61,7 @@ export function FormCreateTank({ gatewayId }: { gatewayId: string }) {
             <FormItem>
               <FormLabel>Nome</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Nome do tanque" />
+                <Input {...field} placeholder="Digite um nome" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -65,7 +76,7 @@ export function FormCreateTank({ gatewayId }: { gatewayId: string }) {
               <FormControl>
                 <Input
                   {...field}
-                  placeholder="ID para configurar o arduino"
+                  placeholder="Escolha um ID para o arduino"
                   type="number"
                   onChange={(value) =>
                     field.onChange(value.target.valueAsNumber)
@@ -86,7 +97,7 @@ export function FormCreateTank({ gatewayId }: { gatewayId: string }) {
               <FormControl>
                 <Textarea
                   {...field}
-                  placeholder="Descrição sobre o tanque"
+                  placeholder="Digite uma descrição para esclarecimetos"
                   className="max-h-40"
                 />
               </FormControl>
@@ -101,7 +112,10 @@ export function FormCreateTank({ gatewayId }: { gatewayId: string }) {
             <FormItem>
               <FormLabel>Endereço</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Endereço do tanque" />
+                <Input
+                  {...field}
+                  placeholder="Digite o endereço do dispositivo"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

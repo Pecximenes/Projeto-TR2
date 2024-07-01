@@ -1,13 +1,13 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { SortButton } from "./sortButton";
 
-export type TankLevel = {
+type TankLevel = {
   id: string;
   level: number;
   caughtAt: Date;
 };
 
-export const columns: ColumnDef<TankLevel>[] = [
+const columns: ColumnDef<TankLevel>[] = [
   {
     accessorKey: "level",
     header: "Nivel",
@@ -18,3 +18,5 @@ export const columns: ColumnDef<TankLevel>[] = [
     invertSorting: true,
   },
 ];
+
+export { type TankLevel, columns };

@@ -1,4 +1,4 @@
-import { SignInButton } from "./_components/signInButton";
+import { SignInButton } from "~/components/app";
 import { FaGoogle, FaGithub, FaDiscord } from "react-icons/fa";
 
 export default function HomePage() {

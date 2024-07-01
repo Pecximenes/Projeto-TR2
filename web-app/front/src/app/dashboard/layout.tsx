@@ -1,5 +1,4 @@
-import { Footer } from "./_components/footer";
-import { Navbar } from "./_components/navbar";
+import { Footer, Navbar } from "~/components/app";
 
 export default function LayoutDashboard({ children }: React.PropsWithChildren) {
   return (

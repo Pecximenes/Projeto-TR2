@@ -1,10 +1,9 @@
+import { buttonVariants } from "~/components/ui/button";
+import { DataTable, columns } from "~/components/app";
 import { mockTank } from "~/mocks/tanks";
-import { DataTable } from "./_components/dataTable";
-import { columns } from "./_components/dataTable/columns";
 import { unstable_noStore as noStore } from "next/cache";
 import Link from "next/link";
 import { MoveLeft } from "lucide-react";
-import { buttonVariants } from "~/components/ui/button";
 
 export default function TankPage({ params }: { params: { id: string } }) {
   noStore();
