@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Gateway {
+  id          String  @id @default(cuid())
+  arduinoId   Int     @unique
+  name        String  @unique
+  address     String? @unique
+  description String?
+  tanks       Tank[]
+
+  @@map("gateways")
+}
+
+model Tank {
+  id          String      @id @default(cuid())
+  arduinoId   Int         @unique
+  name        String      @unique
+  address     String?     @unique
+  description String?
+  gateway     Gateway     @relation(fields: [gatewayId], references: [id])
+  gatewayId   String
+  levels      TankLevel[]
+
+  @@map("tanks")
+}
+
+model TankLevel {
+  id       String   @id @default(cuid())
+  level    Int
+  caughtAt DateTime @default(now())
+  tank     Tank?    @relation(fields: [tankId], references: [id])
+  tankId   String?
+
+  @@map("tank_levels")
+}

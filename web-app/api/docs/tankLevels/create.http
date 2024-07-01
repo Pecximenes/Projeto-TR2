@@ -1,0 +1,13 @@
+POST http://0.0.0.0:3001/tanklevels/create
+Content-Type: application/json
+
+{
+  "level": 100,
+  "caughtAt": "2023-03-15T12:00:00Z",
+  "tank": {
+    "arduinoId": 5,
+    "gateway": {
+      "arduinoId": 2
+    }
+  }
+}

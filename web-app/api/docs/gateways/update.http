@@ -1,0 +1,6 @@
+PATCH http://0.0.0.0:3001/gateways/update/cly0hrx1h0000c4y38kjgq4ey
+Content-Type: application/json
+
+{
+  "description": "Alguma Descrição"
+}

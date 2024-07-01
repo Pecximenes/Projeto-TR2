@@ -1,0 +1,32 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "api para comunicacao entre o front da aplicacao web e o banco de dados",
+  "author": {
+    "name": "Paulo Fernando",
+    "url": "https://github.com/pafev",
+    "email": "paulofvilarimda@gmail.com"
+  },
+  "license": "ISC",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:reset": "prisma db push --force-reset",
+    "db:studio": "prisma studio"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "prisma": "^5.16.1",
+    "tsx": "^4.15.8",
+    "typescript": "^5.5.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.16.1",
+    "fastify": "^4.28.0",
+    "pino-pretty": "^11.2.1",
+    "zod": "^3.23.8"
+  }
+}

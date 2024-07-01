@@ -1,0 +1,7 @@
+POST http://0.0.0.0:3001/gateways/create
+Content-Type: application/json
+
+{
+  "arduinoId": 1,
+  "name": "Gateway 1"
+}
