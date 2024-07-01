@@ -38,7 +38,7 @@ export default async function DashboardPage() {
       </section>
       {!gateways && <span>Crie um Gateway...</span>}
       {!!gateways && (
-        <div className="flex flex-col flex-wrap items-center justify-between md:flex-row md:items-start">
+        <div className="flex flex-col flex-wrap items-center justify-between gap-3 md:flex-row md:items-start">
           {gateways.map((gateway) => (
             <Card
               key={gateway.id}

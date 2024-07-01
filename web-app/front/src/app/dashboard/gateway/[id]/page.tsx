@@ -11,6 +11,8 @@ import {
 import { FormCreateArduino, MyDialog } from "~/components/app";
 import { MoveLeft } from "lucide-react";
 import { getGateway } from "~/actions";
+import { DeleteButton } from "~/components/app/deleteButton";
+import { deleteTank } from "~/actions/deleteTank";
 
 export default async function GatewayPage({
   params,
@@ -59,7 +61,7 @@ export default async function GatewayPage({
         <p className="line-clamp-1">{gateway.description}</p>
       </section>
       <section className="my-8">
-        <div className="flex items-baseline justify-between">
+        <div className="mb-2 flex items-baseline justify-between">
           <h2 className="text-2xl">Tanques</h2>
           <span className="text-base font-light">
             Quantidade total: {gateway.tanks.length}
@@ -81,13 +83,14 @@ export default async function GatewayPage({
                     Arduino de ID {tank.arduinoId}, {tank.address}
                   </p>
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="flex justify-between">
                   <Link
                     href={`/dashboard/tank/${tank.id}`}
                     className={buttonVariants()}
                   >
                     Veja Mais
                   </Link>
+                  <DeleteButton action={deleteTank} id={tank.id} />
                 </CardFooter>
               </Card>
             ))}

@@ -9,7 +9,7 @@ export function SortButton({
 }: React.PropsWithChildren<{ column: Column<TankLevel> }>) {
   return (
     <Button
-      className="bg-transparent p-0 text-slate-500 hover:bg-transparent"
+      className="bg-transparent p-0 text-slate-600 hover:bg-transparent"
       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
     >
       Captura

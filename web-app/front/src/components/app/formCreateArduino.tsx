@@ -16,12 +16,13 @@ import {
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { useToast } from "../ui/use-toast";
+import { DialogClose } from "../ui/dialog";
 
 const formSchema = z.object({
   name: z.string().min(1),
   arduinoId: z.number(),
-  description: z.string().min(1).optional(),
-  address: z.string().min(1).optional(),
+  description: z.string().optional(),
+  address: z.string().optional(),
 });
 
 export function FormCreateArduino({
@@ -48,8 +49,9 @@ export function FormCreateArduino({
       console.log({ ...values, gatewayId });
       createTank({ ...values, gatewayId }).catch(() =>
         toast({
-          title: "Erro ao criar tanque",
-          description: "Verifique se passou um ID válido para o Arduino",
+          title: "Ops! Algo deu errado",
+          description: "Verifique se os campos passados já não existem",
+          variant: "destructive",
         }),
       );
       refresh(`/dashboard/gateway/${gatewayId}}`).catch((error) =>
@@ -59,8 +61,9 @@ export function FormCreateArduino({
     if (type === "gateway") {
       createGateway(values).catch(() =>
         toast({
-          title: "Erro ao criar gateway",
-          description: "Verifique se passou um ID válido para o Arduino",
+          title: "Ops! Algo deu errado",
+          description: "Verifique se os campos passados já não existem",
+          variant: "destructive",
         }),
       );
       refresh("/dashboard").catch((error) => console.error(error));
@@ -140,9 +143,11 @@ export function FormCreateArduino({
             </FormItem>
           )}
         />
-        <Button type="submit" className="mt-4">
-          Adicionar
-        </Button>
+        <DialogClose asChild>
+          <Button type="submit" className="mt-4">
+            Adicionar
+          </Button>
+        </DialogClose>
       </form>
     </Form>
   );
