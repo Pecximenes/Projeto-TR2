@@ -33,7 +33,7 @@ export default async function TankPage({ params }: { params: { id: string } }) {
         <h2 className="text-2xl">{tank.name}</h2>
         <p className="line-clamp-1">{tank.description}</p>
       </section>
-      <section className="my-8">
+      <section className="mt-8">
         <h2 className="text-2xl">Histórico de Medições</h2>
         <DataTable columns={columns} data={tank.levels} />
       </section>

@@ -29,7 +29,7 @@ export function DeleteButton({
         className={buttonVariants({
           variant: "destructive",
           className:
-            "border-2 border-red-500 bg-red-400 bg-transparent text-red-500 hover:text-white",
+            "border-2 border-red-500 bg-transparent text-red-500 hover:text-white dark:bg-red-600/30 dark:hover:bg-red-600/60",
         })}
       >
         <TrashIcon className="size-4" />

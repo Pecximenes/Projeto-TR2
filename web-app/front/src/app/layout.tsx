@@ -2,6 +2,7 @@ import "~/styles/globals.css";
 import { Toaster } from "~/components/ui/toaster";
 
 import { GeistSans } from "geist/font/sans";
+import { ThemeProvider } from "~/components/app";
 
 export const metadata = {
   title: "UnB - Monitoramento de Tanques",
@@ -18,8 +19,15 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={`${GeistSans.variable}`}>
       <body className="min-h-screen w-screen overflow-x-hidden antialiased">
-        {children}
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

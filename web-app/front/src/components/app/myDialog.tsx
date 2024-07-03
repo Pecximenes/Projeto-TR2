@@ -11,7 +11,11 @@ import {
 } from "../ui/dialog";
 
 function Trigger({ children }: React.PropsWithChildren) {
-  return <DialogTrigger className={buttonVariants()}>{children}</DialogTrigger>;
+  return (
+    <DialogTrigger className={buttonVariants({ variant: "outline" })}>
+      {children}
+    </DialogTrigger>
+  );
 }
 
 function Content({ children }: React.PropsWithChildren) {
@@ -35,35 +39,6 @@ function Content({ children }: React.PropsWithChildren) {
 function Header({ children }: React.PropsWithChildren) {
   return <DialogHeader className="mb-4">{children}</DialogHeader>;
 }
-
-() => {
-  return (
-    <Dialog>
-      <DialogTrigger className={buttonVariants()}>
-        Adicionar Gateway
-      </DialogTrigger>
-      <DialogContent className="min-w-[45%] rounded bg-white p-6 shadow">
-        <DialogHeader className="mb-4">
-          <DialogTitle>Adicione um Gateway</DialogTitle>
-          <DialogDescription>
-            Preencha o formulário abaixo para criar um gateway na plataforma,
-            antes de configurá-lo no local desejado
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <DialogClose
-            className={buttonVariants({
-              variant: "secondary",
-              className: "mt-4 border-2 px-6 hover:bg-slate-600/10",
-            })}
-          >
-            Fechar
-          </DialogClose>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-};
 
 export const MyDialog = {
   Root: Dialog,
