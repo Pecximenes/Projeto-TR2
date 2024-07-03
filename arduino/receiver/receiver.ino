@@ -3,13 +3,13 @@
 /* Passos para realizar a comunicação entre dispositivos, levando em conta os passos de um gateway:
     1º= O gateway acorda e espera 10 segundos para todos os outros dispositivos acordarem.
     2º= O gateway inicia um cronometro para analisar quanto tempo vai durar para ele coletar todos os dados.
-    1º= Mensagem inicial, o gateway vai começar a coleta de dados seguindo a ordem crescente de id's dos nós, começando com o nó de id 1.
+    3º= Mensagem inicial, o gateway vai começar a coleta de dados seguindo a ordem crescente de id's dos nós, começando com o nó de id 1.
         a. Ele deve mandar um pacote com 2 informações: Seu id e o id do destinatario
         b. Agora ele vai ouvir o canal, caso não receba nada em 5 segundos, ele vai tentar novamente, no total são 3 tentativas.
         c. Ele deve receber uma mensagem com 3 informações: o id do remetente, o id do destinatário, o nível do tanque codificado (usar aquela divisão feita em tr1 - CRC).
         d. Caso a mensagem tenha algum erro, ele deve reenviar a mensagem pedindo novamente o resultado.
-    2º= Depois de receber as informações de todos, ele vai enviar repetitivamente durante 5 segundos uma mensagem para todos dormirem. 
-    3º= Suspender o gateway com base no cronometro, fazendo a contagem acontecer de 1 em 1 hora.
+    4º= Depois de receber as informações de todos, ele vai enviar repetitivamente durante 5 segundos uma mensagem para todos dormirem. 
+    5º= Suspender o gateway com base no cronometro, fazendo a contagem acontecer de 1 em 1 hora.
 
 */
 
@@ -22,6 +22,14 @@ const int localId = 0; // Id do Gateway
 
 const int arraySize = 1; // Tamanho do array
 const int destIdArray[arraySize] = {1}; // Array de id's dos dispositivos de transmissão
+
+//* Cronometro
+unsigned long startTime;                // Tempo quando o se inicia a coleta dos dados
+unsigned long endTime;                  // Tempo total após coletar os dados
+
+unsigned int globalExecPeriod = 60000;  // Tempo de duração completa do período de execução
+unsigned int listeningTime = 5000;      // Tempo de escuta do sinal 
+unsigned int startListeningTime;
 
 
 void setupSerial() {
@@ -41,85 +49,84 @@ void setupLoRa() {
 void setup() {
     setupSerial();
     setupLoRa();
-
-    // register the channel activity dectection callback
-    // LoRa.onCadDone(onCadDone);
-    // // register the receive callback
-    // LoRa.onReceive(onReceive);
-    // put the radio into CAD mode
-    // LoRa.channelActivityDetection();
 }
 
-void establishingConnectionTx(int destId) {
-    Serial.println("Iniciando envio do ACK");
+
+//* Existem dois tipos de type: REQ -> Pedido de dados, FIN -> Finalização da chamada
+void sendPacket(int destId, String type="REQ", int msg=0) {
+    Serial.println("Iniciando envio do pacote o nó" + destId);
     LoRa.beginPacket();
-    LoRa.write(localId);  // endereco local do modulo transmissor
+    LoRa.write(localId); // endereco local do modulo transmissor
     LoRa.write(destId);  // endereco do modulo de destino
+    LoRa.write(type);  // mensagem do pacote
+    LoRa.write(msg);  // mensagem do pacote
     LoRa.endPacket();
 }
 
+bool receivePacket() {
+    if (LoRa.parsePacket()) {
+        // Lê pacote
+        //TODO: Adicionar as informações que o pacote recebe alem de senderId, receiverId e tankLevelUnchecked
+        while (LoRa.available()) {
+            senderId = LoRa.read();
+            receiverId = LoRa.read();
+            tankLevelUnchecked = LoRa.read();
+        }
+
+        if (senderId == gatewayId && receiverId == localId) {
+            Serial.println("Mensagem do nó " + senderId + " Recebida!");
+            return true;
+        }
+
+        return false;
+}}
+
 void loop() {
+    //TODO: Parte que faz o gateway esperar
+    // ...
+
+    startTime = millis(); // Inicia o contador geral
+
     // Laço que percorre todos os dispositivos transmissores
     for (int i = 0; i < arraySize; i++) {
-        // antes de tudo devemos estabelecer conexao
-        establishingConnectionTx(destIdArray[i]);
+        //TODO: Fazer o tratamento no dado
+        unsigned int tankLevelUnchecked; // Dados do Tanque sem tratamento
+        unsigned int tankLevelChecked; // Dados do Tanque
+        bool checked = false;
+
+        while (!checked) {
+            sendPacket(destIdArray[i]); // Enviando pedido para o nó
+
+            startListeningTime = millis(); // Início do intervalo de escuta
+            bool connected;
+
+            while (millis() - startListeningTime < listeningTime) {
+                connected = receivePacket();
+                if (connected) {
+                    break;
+                }
+            }
+
+            if (!connected) {
+                Serial.println("Nó " + senderId + " não enviou a mensagem!");
+                break;
+            } else {
+                //TODO: Fazer o tratamento no dado
+                // checked = funcaoParaVerificarSeMensagemTaCerta()
+                if (checked) {
+                    //TODO: Enviar as informações do tanque
+                }
+            }       
+        }
     }
-    // LoRa.channelActivityDetection();
-    // LoRa.onCadDone(onCadDone);
 
-    // if (LoRa.parsePacket()) {
-    //     int contentLength = LoRa.read();
-    //     int senderId = LoRa.read();
-    //     int receiverId = LoRa.read();
-    //     // unsigned long caughAt = LoRa.read();
+    endTime = millis() - startTime; // Finaliza o contador geral
+    unsigned int sleepTime = globalExecPeriod - endTime;
 
-    //     if (receiverId != localId) {
-    //         return;
-    //     }
+    startListeningTime = millis(); // Início do intervalo de escuta
+    while (millis() - startListeningTime < listeningTime) {
+        sendPacket(localId, "FIN", sleepTime);
+    }
 
-    //     String content = "";
-    //     while (LoRa.available()) {
-    //         content += (char)LoRa.read();
-    //     }
-
-    //     if (contentLength != content.length()) {
-    //         Serial.println("Mensagem corrompida recebida");
-    //         return;
-    //     }
-    //     LoRa.packetRssi();
-
-    //     Serial.println(content + ' ' + senderId + ' ' + receiverId);
-    // }
-    // LoRa.onCadDone(onCadDone);
-    delay(1000);
-
+    sleep(sleepTime - listeningTime);
 }
-
-// void onCadDone(boolean signalDetected) {
-//   // detect preamble
-//   if (signalDetected) {
-//     Serial.println("Sinal Detectado!");
-//     // put the radio into continuous receive mode
-//     LoRa.receive();
-//   } else {
-//     // try next activity dectection
-//     LoRa.channelActivityDetection();
-//   }
-// }
-
-// void onReceive(int packetSize) {
-//   // received a packet
-//   Serial.print("Received packet '");
-
-//   // read packet
-//   for (int i = 0; i < packetSize; i++) {
-//     Serial.print((char)LoRa.read());
-//   }
-
-//   // print RSSI of packet
-//   Serial.print("' with RSSI ");
-//   Serial.println(LoRa.packetRssi());
-
-//   // put the radio into CAD mode
-//   LoRa.channelActivityDetection();
-// }
