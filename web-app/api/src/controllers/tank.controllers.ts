@@ -28,6 +28,7 @@ export class TankControllerPrisma implements TankController {
           select: {
             id: true,
             level: true,
+            rssi: true,
             caughtAt: true,
           },
         },
@@ -64,6 +65,7 @@ export class TankControllerPrisma implements TankController {
           select: {
             id: true,
             level: true,
+            rssi: true,
             caughtAt: true,
           },
         },
@@ -104,6 +106,7 @@ export class TankControllerPrisma implements TankController {
           select: {
             id: true,
             level: true,
+            rssi: true,
             caughtAt: true,
           },
         },
@@ -131,6 +134,7 @@ export class TankControllerPrisma implements TankController {
           select: {
             id: true,
             level: true,
+            rssi: true,
             caughtAt: true,
           },
         },
