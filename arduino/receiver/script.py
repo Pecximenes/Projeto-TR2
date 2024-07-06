@@ -30,7 +30,7 @@ while True:
             session = Session()
             for attempt in range(3):
                 try:
-                    response = session.post("http://localhost:3001/api/tanklevel/create", data=data)
+                    response = session.post("http://0.0.0.0:3001/tanklevels/create", data=data)
                     if response.status_code == 200:
                         print(response.text)
                         break
