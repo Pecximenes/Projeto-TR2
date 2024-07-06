@@ -15,14 +15,16 @@ while True:
 
         if cmd == "dados:":
             # Enviar dados para o servidor
-            data = {"id": gateway_id,
-                    "tanks": {
-                        "id": tank_id,
-                        "levels": {
-                            "level": tank_level,
-                            "caught_at": datetime.now()
-                        }
+            data = {
+                "level": int(tank_level),
+                "rssi": int(rssi),
+                "caughtAt": datetime.now(),
+                "tank": {
+                    "arduinoId": int(tank_id),
+                    "gateway": {
+                        "arduinoId": int(gateway_id)
                     }
+                }
             }
 
             session = Session()
