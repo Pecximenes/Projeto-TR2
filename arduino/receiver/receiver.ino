@@ -6,7 +6,7 @@
     3º= Mensagem inicial, o gateway vai começar a coleta de dados seguindo a ordem crescente de id's dos nós, começando com o nó de id 1.
         a. Ele deve mandar um pacote com 2 informações: Seu id e o id do destinatario
         b. Agora ele vai ouvir o canal, caso não receba nada em 5 segundos, ele vai tentar novamente, no total são 3 tentativas.
-        c. Ele deve receber uma mensagem com 3 informações: o id do remetente, o id do destinatário, o nível do tanque codificado (usar aquela divisão feita em tr1 - CRC).
+        c. Ele deve receber uma mensagem com 3 informações (adicionar também os dados extras para analise): o id do remetente, o id do destinatário, o nível do tanque codificado (usar aquela divisão feita em tr1 - CRC).
         d. Caso a mensagem tenha algum erro, ele deve reenviar a mensagem pedindo novamente o resultado.
     4º= Depois de receber as informações de todos, ele vai enviar repetitivamente durante 5 segundos uma mensagem para todos dormirem. 
     5º= Suspender o gateway com base no cronometro, fazendo a contagem acontecer de 1 em 1 hora.
@@ -64,22 +64,36 @@ void sendPacket(int destId, String type="REQ", int msg=0) {
 }
 
 bool receivePacket() {
-    if (LoRa.parsePacket()) {
+    if (LoRa.parsePacket(int nodeId)) {
         // Lê pacote
-        //TODO: Adicionar as informações que o pacote recebe alem de senderId, receiverId e tankLevelUnchecked
         while (LoRa.available()) {
             senderId = LoRa.read();
             receiverId = LoRa.read();
+            tankLevelBinary = LoRa.read();
             tankLevelUnchecked = LoRa.read();
         }
 
-        if (senderId == gatewayId && receiverId == localId) {
+        if (senderId == nodeId && receiverId == localId) {
             Serial.println("Mensagem do nó " + senderId + " Recebida!");
             return true;
         }
 
         return false;
 }}
+
+int convertToInt(String binary) {
+  int number = 0;
+  int power = 1; // Potência inicial de 2^0
+
+  for (int i = binary.length() - 1; i >= 0; i--) {
+    if (binary[i] == '1') {
+      number += power;
+    }
+    power *= 2; // Incrementa a potência de 2
+  }
+
+  return number;
+}
 
 void loop() {
     //TODO: Parte que faz o gateway esperar
@@ -91,32 +105,27 @@ void loop() {
     for (int i = 0; i < arraySize; i++) {
         //TODO: Fazer o tratamento no dado
         unsigned int tankLevelUnchecked; // Dados do Tanque sem tratamento
+        String tankLevelBinary;
         unsigned int tankLevelChecked; // Dados do Tanque
-        bool checked = false;
+        bool isChecked = false;
 
-        while (!checked) {
+        startListeningTime = millis(); // Início do intervalo de escuta
+        bool isConnected;
+
+        while (!isChecked && millis() - startListeningTime < listeningTime) {
             sendPacket(destIdArray[i]); // Enviando pedido para o nó
+            delay(500)
 
-            startListeningTime = millis(); // Início do intervalo de escuta
-            bool connected;
-
-            while (millis() - startListeningTime < listeningTime) {
-                connected = receivePacket();
-                if (connected) {
-                    break;
-                }
-            }
-
-            if (!connected) {
-                Serial.println("Nó " + senderId + " não enviou a mensagem!");
-                break;
-            } else {
-                //TODO: Fazer o tratamento no dado
-                // checked = funcaoParaVerificarSeMensagemTaCerta()
-                if (checked) {
+            isConnected = receivePacket(destIdArray[i]);
+            if (isConnected) {
+                int tankLevelBinaryToInt = convertToInt(tankLevelBinary);
+                isChecked = tankLevelBinaryToInt == tankLevelUnchecked
+                if (isChecked) {
                     //TODO: Enviar as informações do tanque
                 }
-            }       
+            } else {
+                Serial.println("Nó " + senderId + " não enviou a mensagem!");
+            }   
         }
     }
 

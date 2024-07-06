@@ -1,8 +1,8 @@
 /* Passos para realizar a comunicação entre dispositivos, levando em conta os passos de um nó:
-    1º= Os nós devem ouvir 
-    1º= 
-    1º= 
-    1º= 
+    1º= Assim que o nó acordar, ele deve ficar ouvindo o canal
+    2º= Quando receber algo, e verifica se é para ele a mensagem, se não for ele ignora.
+    3º= Ele faz o cálculo da mensagem e devolve para o remetente.
+    4º= Ele aguarda mensagem para dormir e asimm que recebe ele hiberna pelo tempo passado na mensagem.
 
 */
 
@@ -19,7 +19,11 @@ const int irqPin = 4;  // Pin DI0
 
 const int gatewayId = 0;
 const int localId = 1;
-int timeout = 100;
+String type;
+int message;
+
+int tankLevel;
+String tankLevelBinary;
 
 const int trigPin = 3;
 const int echoPin = 4;
@@ -59,6 +63,8 @@ bool establishingConnectionRx() {
         while (LoRa.available()) {
             senderId = LoRa.read();
             receiverId = LoRa.read();
+            type = LoRa.read();
+            message = LoRa.read();
         }
 
         if (senderId == gatewayId && receiverId == localId) {
@@ -69,37 +75,54 @@ bool establishingConnectionRx() {
         return false;
 }}
 
-String readTankLevel() {
+void readTankLevel() {
     // ... logica para pegar o nivel do tanque a partir de um sensor
     distance = ultrasonic.read();
     Serial.print("Distancia em CM: ");
     Serial.println(distance);
-    String tankLevel = String(distance);
+    tankLevel = distance;
+}
 
-    return tankLevel;
+String convertBinaries(int numero) {
+  if (numero == 0) {
+    return "0";
+  }
+
+  String binario = "";
+
+  while (numero > 0) {
+    binario = String(numero % 2) + binario;
+    numero = numero / 2;
+  }
+
+  return binario;
 }
 
 void loop() {
     bool connected = false;
     while (!connected) {
         connected = establishingConnectionRx();
-        delay(10);
     }
     Serial.print("Conexão estabelecida com servidor\n");
-    delay(100);
-    
 
-    // String tankLevel = readTankLevel();
-    // if (tankLevel) {
-    //     String tankLevel = "Isso É um teste";
-    //     LoRa.beginPacket();
-    //     // LoRa.write(tankLevel.length());  // tamanho do conteudo do pacote LoRa
-    //     LoRa.write(tankLevel.length());  // tamanho do conteudo do pacote LoRa
-    //     LoRa.write(localId);  // endereco local do modulo transmissor
-    //     LoRa.write(gatewayId);  // endereco do modulo de destino
-    // //     // LoRa.write(millis());  // tempo da captura
-    //     LoRa.print(tankLevel); // conteudo do pacote LoRa
-    //     LoRa.endPacket();
-    //     delay(timeout);  // timeout para enviar o proximo nivel
-    // }
+    if (type == "REQ") {
+
+        readTankLevel(); // Leitor ultrassom
+        // Caso o leitor ultrassom não funcione, utilize o código abaixo
+        // tankLevel = random(1, 300);
+
+        tankLevelBinary = convertBinaries(tankLevel)
+
+
+        if (tankLevel) {
+            LoRa.beginPacket();
+            LoRa.write(localId);  // endereco local do modulo transmissor
+            LoRa.write(gatewayId);  // endereco do modulo de destino
+            LoRa.write(tankLevelBinary);  // mensagem em binário do nível do tanque
+            LoRa.print(tankLevel); // conteudo do pacote LoRa
+            LoRa.endPacket();
+        }
+    } else if (type == "FIN") {
+        sleep(message); // Fazer o dispositivo dormir
+    }
 }
