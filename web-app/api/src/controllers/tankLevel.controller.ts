@@ -12,48 +12,57 @@ export class TankLevelControllerPrisma implements TankLevelController {
 
     DataSchema.parse(data);
 
+    // const createdTankLevel = await db.tankLevel.create({
+    //   data: {
+    //     level: data.level,
+    //     rssi: data.rssi,
+    //     caughtAt: data.caughtAt,
+    //     tank: {
+    //       connect: data.tank,
+    //     },
+    //   },
+    //   select: {
+    //     id: true,
+    //     level: true,
+    //     rssi: true,
+    //     caughtAt: true,
+    //   },
+    // });
+
     const createdTankLevel = await db.tankLevel.create({
       data: {
         level: data.level,
+        rssi: data.rssi,
         caughtAt: data.caughtAt,
         tank: {
-          connect: data.tank,
+          connectOrCreate: {
+            where: {
+              arduinoId: data.tank.arduinoId,
+              gateway: { arduinoId: data.tank.gateway.arduinoId },
+            },
+            create: {
+              arduinoId: data.tank.arduinoId,
+              name: `Tanque ${data.tank.arduinoId}`,
+              gateway: {
+                connectOrCreate: {
+                  where: { arduinoId: data.tank.gateway.arduinoId },
+                  create: {
+                    arduinoId: data.tank.gateway.arduinoId,
+                    name: `Gateway ${data.tank.gateway.arduinoId}`,
+                  },
+                },
+              },
+            },
+          },
         },
       },
       select: {
         id: true,
         level: true,
+        rssi: true,
         caughtAt: true,
       },
     });
-
-    // const createdTankLevel = await db.tankLevel.create({
-    //   data: {
-    //     level: data.level,
-    //     caughtAt: data.caughtAt,
-    //     tank: {
-    //       connectOrCreate: {
-    //         where: {
-    //           arduinoId: data.tank.arduinoId,
-    //           gateway: { arduinoId: data.tank.gateway.arduinoId },
-    //         },
-    //         create: {
-    //           arduinoId: data.tank.arduinoId,
-    //           name: `Tanque ${data.tank.arduinoId}`,
-    //           gateway: {
-    //             connectOrCreate: {
-    //               where: { arduinoId: data.tank.gateway.arduinoId },
-    //               create: {
-    //                 arduinoId: data.tank.gateway.arduinoId,
-    //                 name: `Gateway ${data.tank.gateway.arduinoId}`,
-    //               },
-    //             },
-    //           },
-    //         },
-    //       },
-    //     }
-    //   }
-    // })
 
     return createdTankLevel;
   }

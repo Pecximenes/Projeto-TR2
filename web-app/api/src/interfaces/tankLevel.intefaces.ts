@@ -1,11 +1,13 @@
 type TankLevel = {
   id: string;
   level: number;
+  rssi: number;
   caughtAt: Date;
 };
 
 type TankLevelCreate = {
   level: number;
+  rssi: number;
   caughtAt: Date;
   tank: {
     arduinoId: number;

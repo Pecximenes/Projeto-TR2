@@ -40,6 +40,7 @@ model TankLevel {
   caughtAt DateTime @default(now())
   tank     Tank?    @relation(fields: [tankId], references: [id])
   tankId   String?
+  rssi     Int
 
   @@map("tank_levels")
 }
