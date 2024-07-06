@@ -4,6 +4,7 @@ import { SortButton } from "./sortButton";
 type TankLevel = {
   id: string;
   level: number;
+  rssi: number;
   caughtAt: Date;
 };
 
@@ -16,6 +17,10 @@ const columns: ColumnDef<TankLevel>[] = [
     accessorKey: "caughtAt",
     header: SortButton,
     invertSorting: true,
+  },
+  {
+    accessorKey: "rssi",
+    header: "Intensidade",
   },
 ];
 
