@@ -1,4 +1,4 @@
-//* Todos os dispositivos possuem uma tabela com informações de cada dispositivo do sistema com seus id's e cargos.
+//* O gateway possui uma tabela com informações de cada dispositivo sob seu controle, com seus id's.
 
 /* Passos para realizar a comunicação entre dispositivos, levando em conta os passos de um gateway:
     1º= O gateway acorda e espera 10 segundos para todos os outros dispositivos acordarem.
@@ -54,7 +54,7 @@ void setup() {
 
 //* Existem dois tipos de type: REQ -> Pedido de dados, FIN -> Finalização da chamada
 void sendPacket(int destId, String type="REQ", int msg=0) {
-    Serial.println("Iniciando envio do pacote o nó" + destId);
+    Serial.println("Iniciando envio do pacote ao nó " + destId);
     LoRa.beginPacket();
     LoRa.write(localId); // endereco local do modulo transmissor
     LoRa.write(destId);  // endereco do modulo de destino
