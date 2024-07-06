@@ -37,6 +37,14 @@ export default async function TankPage({ params }: { params: { id: string } }) {
         <h2 className="text-2xl">Histórico de Medições</h2>
         <DataTable columns={columns} data={tank.levels} />
       </section>
+      <section className="mt-8">
+        <h2 className="text-2xl">
+          Rssi:{" "}
+          <span className="text-base font-light">
+            {tank.levels[tank.levels.length - 1]?.rssi}
+          </span>
+        </h2>
+      </section>
     </>
   );
 }

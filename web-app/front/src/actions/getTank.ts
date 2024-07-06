@@ -14,6 +14,7 @@ type Tank = {
   levels: {
     id: string;
     level: number;
+    rssi: number;
     caughtAt: Date;
   }[];
 };
