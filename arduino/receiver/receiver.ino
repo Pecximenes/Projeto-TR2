@@ -119,7 +119,7 @@ void loop() {
         bool isChecked = false;
 
         startListeningTime = millis(); // Início do intervalo de escuta
-        bool isConnected;
+        bool isConnected = false;
 
         while (!isChecked && millis() - startListeningTime < listeningTime) {
             sendPacket(destIdArray[i]); // Enviando pedido para o nó
