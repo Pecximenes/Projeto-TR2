@@ -1,5 +1,8 @@
 //* O gateway possui uma tabela com informações de cada dispositivo sob seu controle, com seus id's.
 
+// Estatistica de perda do pacote
+// Quantos pacotes foram enviados 
+
 /* Passos para realizar a comunicação entre dispositivos, levando em conta os passos de um gateway:
     1º= O gateway acorda e espera 10 segundos para todos os outros dispositivos acordarem.
     2º= O gateway inicia um cronometro para analisar quanto tempo vai durar para ele coletar todos os dados.
@@ -31,6 +34,12 @@ unsigned int globalExecPeriod = 60000;  // Tempo de duração completa do perío
 unsigned int listeningTime = 5000;      // Tempo de escuta do sinal 
 unsigned int startListeningTime;
 
+int senderId;
+int receiverId;
+String tankLevelBinary;
+unsigned int tankLevelUnchecked; // Dados do Tanque sem tratamento
+
+
 
 void setupSerial() {
     Serial.begin(9600);
@@ -54,17 +63,19 @@ void setup() {
 
 //* Existem dois tipos de type: REQ -> Pedido de dados, FIN -> Finalização da chamada
 void sendPacket(int destId, String type="REQ", int msg=0) {
-    Serial.println("Iniciando envio do pacote ao nó " + destId);
+    Serial.print("Iniciando envio do pacote ao nó " + destId);
+    Serial.println(destId);
     LoRa.beginPacket();
     LoRa.write(localId); // endereco local do modulo transmissor
     LoRa.write(destId);  // endereco do modulo de destino
-    LoRa.write(type);  // mensagem do pacote
+    LoRa.print(type);  // mensagem do pacote
     LoRa.write(msg);  // mensagem do pacote
     LoRa.endPacket();
 }
 
-bool receivePacket() {
-    if (LoRa.parsePacket(int nodeId)) {
+bool receivePacket(int nodeId) {
+    int packetSize = LoRa.parsePacket();
+    if (packetSize) {
         // Lê pacote
         while (LoRa.available()) {
             senderId = LoRa.read();
@@ -74,7 +85,9 @@ bool receivePacket() {
         }
 
         if (senderId == nodeId && receiverId == localId) {
-            Serial.println("Mensagem do nó " + senderId + " Recebida!");
+            Serial.print("Mensagem do nó ");
+            Serial.print(senderId);
+            Serial.println(" Recebida!");
             return true;
         }
 
@@ -96,16 +109,12 @@ int convertToInt(String binary) {
 }
 
 void loop() {
-    //TODO: Parte que faz o gateway esperar
-    // ...
-
+    delay(10000);
     startTime = millis(); // Inicia o contador geral
+    Serial.println("Iniciando a coleta dos dados");
 
     // Laço que percorre todos os dispositivos transmissores
     for (int i = 0; i < arraySize; i++) {
-        //TODO: Fazer o tratamento no dado
-        unsigned int tankLevelUnchecked; // Dados do Tanque sem tratamento
-        String tankLevelBinary;
         unsigned int tankLevelChecked; // Dados do Tanque
         bool isChecked = false;
 
@@ -114,17 +123,19 @@ void loop() {
 
         while (!isChecked && millis() - startListeningTime < listeningTime) {
             sendPacket(destIdArray[i]); // Enviando pedido para o nó
-            delay(500)
+            delay(5000);
 
             isConnected = receivePacket(destIdArray[i]);
             if (isConnected) {
                 int tankLevelBinaryToInt = convertToInt(tankLevelBinary);
-                isChecked = tankLevelBinaryToInt == tankLevelUnchecked
+                isChecked = tankLevelBinaryToInt == tankLevelUnchecked;
                 if (isChecked) {
                     //TODO: Enviar as informações do tanque
                 }
             } else {
-                Serial.println("Nó " + senderId + " não enviou a mensagem!");
+                Serial.print("Nó ");
+                Serial.print(senderId);
+                Serial.print(" não enviou a mensagem!");
             }   
         }
     }
@@ -137,5 +148,5 @@ void loop() {
         sendPacket(localId, "FIN", sleepTime);
     }
 
-    sleep(sleepTime - listeningTime);
+    delay(sleepTime - listeningTime);
 }

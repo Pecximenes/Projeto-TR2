@@ -6,16 +6,12 @@
 
 */
 
-
-
-
 #include <SPI.h>
 #include <LoRa.h>
-#include "Ultrasonic.h"
 
-const int csPin = 10;  // Chip Select para o protocolo SPI
-const int resetPin = 0; // Pin de reset do modulo
-const int irqPin = 4;  // Pin DI0
+// Variáveis para armazenar o tempo de duração do pulso ultrassônico
+long duration;
+int distance;
 
 const int gatewayId = 0;
 const int localId = 1;
@@ -32,14 +28,14 @@ int senderId;
 int receiverId;
 String inString = "";    // string de leitura
 
-// Passa como um parâmetro os pinos de trigger(3) e echo(4), respectivamente.
-Ultrasonic ultrasonic(trigPin, echoPin);
-int distance;
-
 void setup() {
     setupSerial();
 
     setupLoRa();
+
+    // Inicialização dos pinos Trig (saída) e Echo (entrada)
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
 }
 
 void setupSerial() {
@@ -49,7 +45,6 @@ void setupSerial() {
 }
 
 void setupLoRa() {
-    LoRa.setPins(csPin, resetPin, irqPin);
     if (!LoRa.begin(915E6)) {
         Serial.println("Erro ao iniciar o modulo LoRa");
         while(1);
@@ -57,8 +52,9 @@ void setupLoRa() {
     Serial.println("Modulo LoRa iniciado com sucesso");
 }
 
-bool establishingConnectionRx() {
-    if (LoRa.parsePacket()) {
+bool receivePacket() {
+    int packetSize = LoRa.parsePacket();
+    if (packetSize) {
         // Lê pacote
         while (LoRa.available()) {
             senderId = LoRa.read();
@@ -69,18 +65,35 @@ bool establishingConnectionRx() {
 
         if (senderId == gatewayId && receiverId == localId) {
             Serial.println("Ack Recebido!");
+            delay(100000);
             return true;
         }
-
+        
+        Serial.println("Ack Recebido!");
         return false;
-}}
+    }
+    return false;
+}
+
 
 void readTankLevel() {
-    // ... logica para pegar o nivel do tanque a partir de um sensor
-    distance = ultrasonic.read();
-    Serial.print("Distancia em CM: ");
-    Serial.println(distance);
-    tankLevel = distance;
+    // Gera um pulso de 10 microssegundos no pino Trig
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Lê a duração do pulso recebido no pino Echo
+  duration = pulseIn(echoPin, HIGH);
+
+  // Calcula a distância em centímetros
+  distance = duration * 0.034 / 2;
+
+  // Imprime a distância no Monitor Serial
+  Serial.print("Distancia: ");
+  Serial.print(distance);
+  Serial.println(" cm");
 }
 
 String convertBinaries(int numero) {
@@ -99,30 +112,36 @@ String convertBinaries(int numero) {
 }
 
 void loop() {
-    bool connected = false;
-    while (!connected) {
-        connected = establishingConnectionRx();
-    }
-    Serial.print("Conexão estabelecida com servidor\n");
+    readTankLevel();
+    delay(1000);
+    // bool connected = false;
+    // while (!connected) {
+    //     Serial.println(connected);
+    //     connected = receivePacket();
+    //     Serial.println(connected);
 
-    if (type == "REQ") {
+    // }
+    // Serial.println(connected);
+    // Serial.print("Conexão estabelecida com servidor\n");
 
-        readTankLevel(); // Leitor ultrassom
-        // Caso o leitor ultrassom não funcione, utilize o código abaixo
-        // tankLevel = random(1, 300);
+    // if (type == "REQ") {
 
-        tankLevelBinary = convertBinaries(tankLevel)
+    //     readTankLevel(); // Leitor ultrassom
+    //     // Caso o leitor ultrassom não funcione, utilize o código abaixo
+    //     // tankLevel = random(1, 300);
+
+    //     tankLevelBinary = convertBinaries(distance);
 
 
-        if (tankLevel) {
-            LoRa.beginPacket();
-            LoRa.write(localId);  // endereco local do modulo transmissor
-            LoRa.write(gatewayId);  // endereco do modulo de destino
-            LoRa.write(tankLevelBinary);  // mensagem em binário do nível do tanque
-            LoRa.print(tankLevel); // conteudo do pacote LoRa
-            LoRa.endPacket();
-        }
-    } else if (type == "FIN") {
-        sleep(message); // Fazer o dispositivo dormir
-    }
+    //     if (tankLevel) {
+    //         LoRa.beginPacket();
+    //         LoRa.write(localId);  // endereco local do modulo transmissor
+    //         LoRa.write(gatewayId);  // endereco do modulo de destino
+    //         LoRa.print(tankLevelBinary);  // mensagem em binário do nível do tanque
+    //         LoRa.write(distance); // conteudo do pacote LoRa
+    //         LoRa.endPacket();
+    //     }
+    // } else if (type == "FIN") {
+    //     delay(message); // Fazer o dispositivo dormir
+    // }
 }
