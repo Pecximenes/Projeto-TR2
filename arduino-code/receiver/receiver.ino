@@ -4,8 +4,8 @@
 #include <LoRa.h>
 
 const int localId = 0;
-const destIdArraySize = 1;
-const destIdArray[destIdArraySize] = {1}
+const int destIdArraySize = 1;
+const int destIdArray[destIdArraySize] = {1};
 
 
 void setup() {
@@ -28,24 +28,6 @@ void setupLoRa() {
 }
 
 
-void loop() {
-    delay(8000);
-
-    unsigned long startTimeGateway = millis();
-    for (int i = 0; i < destIdArraySize; i++) {
-        unsigned long startTimeTank = millis();
-        sendPacket(1, localId, destIdArray[i]);
-        bool packetSent = waitForAck();
-        if (packetSent) {
-            unsigned long endTimeTank = millis();
-            sendPacket(2, localId, destIdArray[i], String(640000 - (endTimeTank - startTimeTank)));
-        }
-    }
-    unsigned long endTimeGateway = millis();
-
-    delay(6400000 - (endTimeGateway - startTimeGateway));
-}
-
 void sendPacket(int mode, int senderId, int destId, String content="") {
     LoRa.beginPacket();
     LoRa.write(mode);
@@ -53,9 +35,40 @@ void sendPacket(int mode, int senderId, int destId, String content="") {
     LoRa.write(destId);
     LoRa.write(content.length());
     LoRa.print(content);
+    LoRa.endPacket();
+    LoRa.receive();
 }
 
-bool waitForAck() {
+void loop() {
+    setTimer(8000);
+
+    unsigned long startTimeGateway = millis();
+    for (int i = 0; i < destIdArraySize; i++) {
+        unsigned long startTimeTank = millis();
+        Serial.println("Fazendo poll para sender de id " + String(destIdArray[i]));
+        sendPacket(1, localId, destIdArray[i]);
+        bool packetSent = waitForData();
+        if (packetSent) {
+            Serial.println("Mandando sender de id " + String(destIdArray[i]) + " dormir");
+            unsigned long endTimeTank = millis();
+            sendPacket(2, localId, destIdArray[i], String(640000 - (endTimeTank - startTimeTank)));
+        }
+    }
+    unsigned long endTimeGateway = millis();
+
+    Serial.println("Dormindo zzzzzzz...");
+    setTimer(640000 - (endTimeGateway - startTimeGateway));
+    Serial.println("Acordei :)");
+}
+
+void setTimer(unsigned int duration)
+{
+  unsigned long startTimer = millis();
+  while (millis() - startTimer < duration);
+}
+
+bool waitForData() {
+    Serial.println("Aguardando pacote com dados");
     while (1) {
         if (LoRa.parsePacket()) {
             int mode = LoRa.read();
@@ -76,7 +89,7 @@ bool waitForAck() {
 
                 int rssiValue = LoRa.packetRssi();
 
-                Serial.println("dados:",tankId, gatewayId, content, rssiValue);
+                Serial.println("# " + String(tankId) + " " + String(gatewayId) + " " + content + " " + String(rssiValue));
                 return true;
             }
 
