@@ -7,6 +7,8 @@ const int localId = 0;
 const int destIdArraySize = 1;
 const int destIdArray[destIdArraySize] = {1};
 
+const unsigned int timeout = 640000;
+
 
 void setup() {
     setupSerial();
@@ -51,13 +53,13 @@ void loop() {
         if (packetSent) {
             Serial.println("Mandando sender de id " + String(destIdArray[i]) + " dormir");
             unsigned long endTimeTank = millis();
-            sendPacket(2, localId, destIdArray[i], String(640000 - (endTimeTank - startTimeTank)));
+            sendPacket(2, localId, destIdArray[i], String(timeout - (endTimeTank - startTimeTank)));
         }
     }
-    unsigned long endTimeGateway = millis();
 
     Serial.println("Dormindo zzzzzzz...");
-    setTimer(640000 - (endTimeGateway - startTimeGateway));
+    unsigned long endTimeGateway = millis();
+    setTimer(timeout - (endTimeGateway - startTimeGateway));
     Serial.println("Acordei :)");
 }
 
