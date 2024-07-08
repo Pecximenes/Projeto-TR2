@@ -4,15 +4,27 @@ from requests import Session
 from threading import Thread
 from requests.exceptions import ChunkedEncodingError, ReadTimeout, RequestException
 from time import sleep
+import json
 
-# Configuracao da porta serial
-serial = Serial('porta', 9600)  # Substitua 'COM3' pela porta correta do seu Arduino
+def postDataToWebServer(tank_id, gateway_id, tank_level, rssi, rsn, frequency_error):
+    data = {
+        "level": int(tank_level),
+        "rssi": int(rssi),
+        "rsn": int(rsn),
+        "frequencyError": int(frequency_error),
+        "caughtAt": datetime.now().strftime("%Y-%m-%d, %H:%M:%S"),
+        "tank": {
+            "arduinoId": int(tank_id),
+            "gateway": {
+                "arduinoId": int(gateway_id)
+            }
+        }
+    }
 
-def postDataToWebServer():
     session = Session()
     for attempt in range(3):
         try:
-            response = session.post("http://0.0.0.0:3001/tanklevels/create", data=data)
+            response = session.post("http://0.0.0.0:3001/tanklevels/create", json=data, headers={"Content-Type": "application/json"}, timeout=10)
             if response.status_code == 200:
                 print(response.text)
                 break
@@ -20,27 +32,18 @@ def postDataToWebServer():
             if attempt < 2:
                 sleep(2)
             else:
-                raise
+                break
+
+# Inicialização da porta serial
+serial = Serial('/dev/ttyACM1', 9600)  # Substitua 'COM3' pela porta correta do seu Arduino
 
 while True:
     if serial.in_waiting > 0:
         line = serial.readline().decode('utf-8').rstrip()
-        print(f"Leitura do sensor: {line}")
+        print(line)
 
         if line[0] == "#":
-            tank_id, gateway_id, tank_level, rssi = line[1:].split()
-            # Enviar dados para o servidor
-            data = {
-                "level": int(tank_level),
-                "rssi": int(rssi),
-                "caughtAt": datetime.now(),
-                "tank": {
-                    "arduinoId": int(tank_id),
-                    "gateway": {
-                        "arduinoId": int(gateway_id)
-                    }
-                }
-            }
+            tank_id, gateway_id, tank_level, rssi, rsn, frequency_error = line[1:].split()
 
-            thread = Thread(target=postDataToWebServer, args=(), daemon=True)
+            thread = Thread(target=postDataToWebServer, args=(tank_id, gateway_id, tank_level, rssi, rsn, frequency_error), daemon=True)
             thread.start()
