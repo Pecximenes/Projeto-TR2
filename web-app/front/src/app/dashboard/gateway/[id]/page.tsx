@@ -21,7 +21,7 @@ export default async function GatewayPage({
 }) {
   const gateway = await getGateway(params.id);
 
-  if (gateway instanceof Error) return null;
+  if (gateway instanceof Error || !gateway) return null;
 
   return (
     <>

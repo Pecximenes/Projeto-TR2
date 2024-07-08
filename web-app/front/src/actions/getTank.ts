@@ -6,6 +6,8 @@ type Tank = {
   name: string;
   address: string | null;
   description: string | null;
+  fullLevel: number;
+  alertLevel: number | null;
   gateway: {
     id: string;
     name: string;
@@ -15,6 +17,7 @@ type Tank = {
     id: string;
     level: number;
     rssi: number;
+    snr: number;
     caughtAt: Date;
   }[];
 };

@@ -3,11 +3,12 @@ import { DataTable, columns } from "~/components/app";
 import Link from "next/link";
 import { MoveLeft } from "lucide-react";
 import { getTank } from "~/actions";
+import { AlertLevel } from "./_components/alertLevel";
 
 export default async function TankPage({ params }: { params: { id: string } }) {
   const tank = await getTank(params.id);
 
-  if (tank instanceof Error) return null;
+  if (tank instanceof Error || !tank) return null;
 
   return (
     <>
@@ -37,11 +38,26 @@ export default async function TankPage({ params }: { params: { id: string } }) {
         <h2 className="text-2xl">Histórico de Medições</h2>
         <DataTable columns={columns} data={tank.levels} />
       </section>
-      <section className="mt-8">
+      <section className="mt-8 flex justify-between">
         <h2 className="text-2xl">
-          Rssi:{" "}
+          Nivel Total do Tanque:{" "}
+          <span className="text-base font-light">{tank.fullLevel}</span>
+        </h2>
+        <AlertLevel currentLevel={tank.levels[tank.levels.length - 1]?.level}>
+          {tank.alertLevel}
+        </AlertLevel>
+      </section>
+      <section className="mt-8 flex gap-8">
+        <h2 className="text-2xl">
+          RSSI:{" "}
           <span className="text-base font-light">
-            {tank.levels[tank.levels.length - 1]?.rssi}
+            {tank.levels[tank.levels.length - 1]?.rssi} dBm
+          </span>
+        </h2>
+        <h2 className="text-2xl">
+          SNR:{" "}
+          <span className="text-base font-light">
+            {tank.levels[tank.levels.length - 1]?.snr} dB
           </span>
         </h2>
       </section>

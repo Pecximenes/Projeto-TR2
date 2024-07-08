@@ -5,6 +5,7 @@ type TankLevel = {
   id: string;
   level: number;
   rssi: number;
+  snr: number;
   caughtAt: Date;
 };
 
@@ -20,7 +21,11 @@ const columns: ColumnDef<TankLevel>[] = [
   },
   {
     accessorKey: "rssi",
-    header: "Intensidade",
+    header: "RSSI (dBm)",
+  },
+  {
+    accessorKey: "snr",
+    header: "SNR (dB)",
   },
 ];
 

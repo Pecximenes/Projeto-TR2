@@ -21,6 +21,8 @@ import { DialogClose } from "../ui/dialog";
 const formSchema = z.object({
   name: z.string().min(1),
   arduinoId: z.number(),
+  fullLevel: z.number(),
+  alertLevel: z.number().optional(),
   description: z.string().optional(),
   address: z.string().optional(),
 });
@@ -39,6 +41,8 @@ export function FormCreateArduino({
     defaultValues: {
       name: "",
       arduinoId: 0,
+      fullLevel: 0,
+      alertLevel: 0,
       description: "",
       address: "",
     },
@@ -59,7 +63,8 @@ export function FormCreateArduino({
       );
     }
     if (type === "gateway") {
-      createGateway(values).catch(() =>
+      const { fullLevel, alertLevel, ...gatewayValues } = values;
+      createGateway(gatewayValues).catch(() =>
         toast({
           title: "Ops! Algo deu errado",
           description: "Verifique se os campos passados já não existem",
@@ -76,40 +81,88 @@ export function FormCreateArduino({
         onSubmit={form.handleSubmit(handleSubmit)}
         className="flex flex-col gap-1 sm:gap-4"
       >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nome</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Digite um nome" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="arduinoId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>ID Arduino</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="Escolha um ID para o arduino"
-                  type="number"
-                  onChange={(value) =>
-                    field.onChange(value.target.valueAsNumber)
-                  }
-                  min={0}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex items-end gap-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Nome</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Digite um nome" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="arduinoId"
+            render={({ field }) => (
+              <FormItem className="w-32">
+                <FormLabel>ID Arduino</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Escolha um ID para o arduino"
+                    type="number"
+                    onChange={(value) =>
+                      field.onChange(value.target.valueAsNumber)
+                    }
+                    min={0}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        {type === "tank" && (
+          <div className="flex items-end gap-4">
+            <FormField
+              control={form.control}
+              name="fullLevel"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Nivel Total</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Digite o nivel do tanque cheio"
+                      type="number"
+                      onChange={(value) =>
+                        field.onChange(value.target.valueAsNumber)
+                      }
+                      min={0}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="alertLevel"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Nivel de Alerta</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Digite um nivel de alerta para o tanque"
+                      type="number"
+                      onChange={(value) =>
+                        field.onChange(value.target.valueAsNumber)
+                      }
+                      min={0}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        )}
         <FormField
           control={form.control}
           name="description"

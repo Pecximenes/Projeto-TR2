@@ -5,12 +5,16 @@ type TankCreate = {
   name: string;
   address?: string;
   description?: string;
+  fullLevel: number;
+  alertLevel?: number;
   gatewayId: string;
 };
 
 type Tank = {
   id: string;
   arduinoId: number;
+  fullLevel: number;
+  alertLevel: number | null;
   name: string;
   address: string | null;
   description: string | null;
