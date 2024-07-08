@@ -3,7 +3,6 @@ type TankLevel = {
   level: number;
   rssi: number;
   snr: number | null;
-  frequencyError: number | null;
   caughtAt: string;
 };
 
@@ -11,7 +10,6 @@ type TankLevelCreate = {
   level: number;
   rssi: number;
   snr?: number;
-  frequencyError?: number;
   caughtAt: string;
   tank: {
     arduinoId: number;

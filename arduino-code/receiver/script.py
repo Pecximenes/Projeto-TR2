@@ -5,12 +5,11 @@ from threading import Thread
 from requests.exceptions import ChunkedEncodingError, ReadTimeout, RequestException
 from time import sleep
 
-def postDataToWebServer(tank_id, gateway_id, tank_level, rssi, snr, frequency_error):
+def postDataToWebServer(tank_id, gateway_id, tank_level, rssi, snr):
     data = {
         "level": int(tank_level),
         "rssi": int(rssi),
         "snr": float(snr),
-        "frequencyError": int(frequency_error),
         "caughtAt": datetime.now().strftime("%Y-%m-%d, %H:%M:%S"),
         "tank": {
             "arduinoId": int(tank_id),
@@ -42,7 +41,7 @@ while True:
         print(line)
 
         if line[0] == "#":
-            tank_id, gateway_id, tank_level, rssi, snr, frequency_error = line[1:].split()
+            tank_id, gateway_id, tank_level, rssi, snr = line[1:].split()
 
-            thread = Thread(target=postDataToWebServer, args=(tank_id, gateway_id, tank_level, rssi, snr, frequency_error), daemon=True)
+            thread = Thread(target=postDataToWebServer, args=(tank_id, gateway_id, tank_level, rssi, snr), daemon=True)
             thread.start()

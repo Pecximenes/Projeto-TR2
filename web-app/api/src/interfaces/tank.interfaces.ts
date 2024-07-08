@@ -14,7 +14,6 @@ type TankGetOne = {
     level: number;
     rssi: number;
     snr: number | null;
-    frequencyError: number | null;
     caughtAt: string;
   }[];
 };

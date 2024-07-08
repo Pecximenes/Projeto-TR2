@@ -35,14 +35,13 @@ model Tank {
 }
 
 model TankLevel {
-  id             String  @id @default(cuid())
-  level          Int
-  caughtAt       String
-  tank           Tank?   @relation(fields: [tankId], references: [id])
-  tankId         String?
-  rssi           Int
-  snr            Int?
-  frequencyError BigInt?
+  id       String  @id @default(cuid())
+  level    Int
+  caughtAt String
+  tank     Tank?   @relation(fields: [tankId], references: [id])
+  tankId   String?
+  rssi     Int
+  snr      Int?
 
   @@map("tank_levels")
 }
