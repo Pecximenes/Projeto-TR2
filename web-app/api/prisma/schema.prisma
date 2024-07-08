@@ -41,7 +41,7 @@ model TankLevel {
   tank     Tank?   @relation(fields: [tankId], references: [id])
   tankId   String?
   rssi     Int
-  snr      Int?
+  snr      Float?
 
   @@map("tank_levels")
 }
