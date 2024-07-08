@@ -2,14 +2,14 @@
 
 #include <SPI.h>
 #include <LoRa.h>
-// #include "Ultrasonic.h"
+#include <Ultrasonic.h>
 
-const int localId = 1;
+const int localId = 2;
 int gatewayId;
 
-// const int trigPin = 3;
-// const int echoPin = 4;
-// Ultrasonic ultrasonic(trigPin, echoPin);
+const int trigPin = 3;
+const int echoPin = 4;
+Ultrasonic ultrasonic(trigPin, echoPin);
 
 
 void setup() {
@@ -115,7 +115,6 @@ String waitForSleep() {
 }
 
 String readTankLevel() {
-    // int distance = ultrasonic.read();
-    // return String(distance);
-    return "100";
+    int distance = ultrasonic.read();
+    return String(distance);
 }

@@ -3,9 +3,9 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-const int localId = 0;
+const int localId = 1;
 const int destIdArraySize = 1;
-const int destIdArray[destIdArraySize] = {1};
+const int destIdArray[destIdArraySize] = {2};
 
 const unsigned int timeout = 640000;
 
