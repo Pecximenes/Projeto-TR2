@@ -12,9 +12,19 @@ export class TankLevelControllerPrisma implements TankLevelController {
 
     DataSchema.parse(data);
 
+    let fullLevel = 357;
+
+    const tank = await db.tank.findUnique({
+      where: { arduinoId: data.tank.arduinoId },
+      select: { fullLevel: true },
+    });
+    if (tank?.fullLevel) {
+      fullLevel = tank.fullLevel;
+    }
+
     const createdTankLevel = await db.tankLevel.create({
       data: {
-        level: data.level,
+        level: fullLevel - data.level,
         rssi: data.rssi,
         snr: data.snr,
         caughtAt: data.caughtAt,
@@ -27,6 +37,7 @@ export class TankLevelControllerPrisma implements TankLevelController {
             create: {
               arduinoId: data.tank.arduinoId,
               name: `Tanque ${data.tank.arduinoId}`,
+              fullLevel: 357,
               gateway: {
                 connectOrCreate: {
                   where: { arduinoId: data.tank.gateway.arduinoId },

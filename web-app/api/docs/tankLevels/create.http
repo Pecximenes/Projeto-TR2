@@ -2,10 +2,9 @@ POST http://0.0.0.0:3001/tanklevels/create
 Content-Type: application/json
 
 {
-  "level": 100,
+  "level": 20,
   "rssi": -50,
-  "rsn": 27,
-  "frequencyError": 2,
+  "snr": 27,
   "caughtAt": "2024-07-04, 14:25:31",
   "tank": {
     "arduinoId": 2,
