@@ -17,6 +17,8 @@ export async function seed() {
       address: "PAT",
       description:
         "Tanque de combustivel localizado no Pavilhao Anision Teixeira",
+      fullLevel: 357,
+      alertLevel: 150,
       gateway: { connect: { arduinoId: 1 } },
     },
   });

@@ -27,6 +27,8 @@ model Tank {
   name        String      @unique
   address     String?     @unique
   description String?
+  fullLevel   Int
+  alertLevel  Int?
   gateway     Gateway     @relation(fields: [gatewayId], references: [id])
   gatewayId   String
   levels      TankLevel[]

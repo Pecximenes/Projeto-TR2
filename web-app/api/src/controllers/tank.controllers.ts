@@ -16,6 +16,8 @@ export class TankControllerPrisma implements TankController {
         address: true,
         arduinoId: true,
         description: true,
+        fullLevel: true,
+        alertLevel: true,
         name: true,
         gateway: {
           select: {
@@ -54,6 +56,8 @@ export class TankControllerPrisma implements TankController {
         address: true,
         arduinoId: true,
         description: true,
+        fullLevel: true,
+        alertLevel: true,
         name: true,
         gateway: {
           select: {
@@ -96,6 +100,8 @@ export class TankControllerPrisma implements TankController {
         address: true,
         arduinoId: true,
         description: true,
+        fullLevel: true,
+        alertLevel: true,
         name: true,
         gateway: {
           select: {
@@ -125,6 +131,8 @@ export class TankControllerPrisma implements TankController {
         address: true,
         arduinoId: true,
         description: true,
+        fullLevel: true,
+        alertLevel: true,
         name: true,
         gateway: {
           select: {

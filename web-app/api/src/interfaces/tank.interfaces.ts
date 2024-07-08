@@ -4,6 +4,8 @@ type TankGetOne = {
   name: string;
   address: string | null;
   description: string | null;
+  fullLevel: number;
+  alertLevel: number | null;
   gateway: {
     id: string;
     name: string;
@@ -23,6 +25,8 @@ type TankCreate = {
   name: string;
   address?: string;
   description?: string;
+  fullLevel: number;
+  alertLevel?: number;
   gatewayId: string;
 };
 
@@ -31,6 +35,8 @@ type TankUpdateOne = {
   name?: string;
   address?: string;
   description?: string;
+  fullLevel: number;
+  alertLevel?: number;
   gatewayId?: string;
 };
 
