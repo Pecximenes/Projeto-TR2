@@ -4,7 +4,6 @@ from requests import Session
 from threading import Thread
 from requests.exceptions import ChunkedEncodingError, ReadTimeout, RequestException
 from time import sleep
-import json
 
 def postDataToWebServer(tank_id, gateway_id, tank_level, rssi, snr, frequency_error):
     data = {
