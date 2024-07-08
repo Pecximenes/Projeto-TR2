@@ -16,7 +16,7 @@ export class TankLevelControllerPrisma implements TankLevelController {
       data: {
         level: data.level,
         rssi: data.rssi,
-        rsn: data.rsn,
+        snr: data.snr,
         frequencyError: data.frequencyError,
         caughtAt: data.caughtAt,
         tank: {
@@ -45,7 +45,7 @@ export class TankLevelControllerPrisma implements TankLevelController {
         id: true,
         level: true,
         rssi: true,
-        rsn: true,
+        snr: true,
         frequencyError: true,
         caughtAt: true,
       },

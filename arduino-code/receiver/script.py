@@ -6,11 +6,11 @@ from requests.exceptions import ChunkedEncodingError, ReadTimeout, RequestExcept
 from time import sleep
 import json
 
-def postDataToWebServer(tank_id, gateway_id, tank_level, rssi, rsn, frequency_error):
+def postDataToWebServer(tank_id, gateway_id, tank_level, rssi, snr, frequency_error):
     data = {
         "level": int(tank_level),
         "rssi": int(rssi),
-        "rsn": int(rsn),
+        "snr": float(snr),
         "frequencyError": int(frequency_error),
         "caughtAt": datetime.now().strftime("%Y-%m-%d, %H:%M:%S"),
         "tank": {
@@ -43,7 +43,7 @@ while True:
         print(line)
 
         if line[0] == "#":
-            tank_id, gateway_id, tank_level, rssi, rsn, frequency_error = line[1:].split()
+            tank_id, gateway_id, tank_level, rssi, snr, frequency_error = line[1:].split()
 
-            thread = Thread(target=postDataToWebServer, args=(tank_id, gateway_id, tank_level, rssi, rsn, frequency_error), daemon=True)
+            thread = Thread(target=postDataToWebServer, args=(tank_id, gateway_id, tank_level, rssi, snr, frequency_error), daemon=True)
             thread.start()

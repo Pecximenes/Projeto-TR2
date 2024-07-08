@@ -2,7 +2,7 @@ type TankLevel = {
   id: string;
   level: number;
   rssi: number;
-  rsn: number | null;
+  snr: number | null;
   frequencyError: number | null;
   caughtAt: string;
 };
@@ -10,7 +10,7 @@ type TankLevel = {
 type TankLevelCreate = {
   level: number;
   rssi: number;
-  rsn?: number;
+  snr?: number;
   frequencyError?: number;
   caughtAt: string;
   tank: {

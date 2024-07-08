@@ -89,8 +89,10 @@ bool waitForData() {
                 }
 
                 int rssiValue = LoRa.packetRssi();
+                float snrValue = LoRa.packetSnr();
+                long freqErrValue = LoRa.packetFrequencyError();
 
-                Serial.println("# " + String(tankId) + " " + String(gatewayId) + " " + content + " " + String(rssiValue));
+                Serial.println("# " + String(tankId) + " " + String(gatewayId) + " " + content + " " + String(rssiValue) + " " + String(snrValue) + " " + String(freqErrValue));
                 return true;
             }
 
