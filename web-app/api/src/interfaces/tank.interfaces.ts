@@ -13,8 +13,8 @@ type TankGetOne = {
     id: string;
     level: number;
     rssi: number;
-    rsn: number;
-    frequencyError: number;
+    rsn: number | null;
+    frequencyError: number | null;
     caughtAt: string;
   }[];
 };
