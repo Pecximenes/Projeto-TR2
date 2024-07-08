@@ -12,27 +12,12 @@ export class TankLevelControllerPrisma implements TankLevelController {
 
     DataSchema.parse(data);
 
-    // const createdTankLevel = await db.tankLevel.create({
-    //   data: {
-    //     level: data.level,
-    //     rssi: data.rssi,
-    //     caughtAt: data.caughtAt,
-    //     tank: {
-    //       connect: data.tank,
-    //     },
-    //   },
-    //   select: {
-    //     id: true,
-    //     level: true,
-    //     rssi: true,
-    //     caughtAt: true,
-    //   },
-    // });
-
     const createdTankLevel = await db.tankLevel.create({
       data: {
         level: data.level,
         rssi: data.rssi,
+        rsn: data.rsn,
+        frequencyError: data.frequencyError,
         caughtAt: data.caughtAt,
         tank: {
           connectOrCreate: {
@@ -60,6 +45,8 @@ export class TankLevelControllerPrisma implements TankLevelController {
         id: true,
         level: true,
         rssi: true,
+        rsn: true,
+        frequencyError: true,
         caughtAt: true,
       },
     });

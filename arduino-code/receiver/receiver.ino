@@ -63,8 +63,7 @@ void loop() {
     Serial.println("Acordei :)");
 }
 
-void setTimer(unsigned int duration)
-{
+void setTimer(unsigned int duration) {
   unsigned long startTimer = millis();
   while (millis() - startTimer < duration);
 }

@@ -2,13 +2,17 @@ type TankLevel = {
   id: string;
   level: number;
   rssi: number;
-  caughtAt: Date;
+  rsn: number;
+  frequencyError: number;
+  caughtAt: string;
 };
 
 type TankLevelCreate = {
   level: number;
   rssi: number;
-  caughtAt: Date;
+  rsn: number;
+  frequencyError: number;
+  caughtAt: string;
   tank: {
     arduinoId: number;
     gateway: {

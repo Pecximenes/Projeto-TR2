@@ -4,11 +4,13 @@ Content-Type: application/json
 {
   "level": 100,
   "rssi": -50,
-  "caughtAt": "2023-03-15T12:00:00Z",
+  "rsn": 27,
+  "frequencyError": 2,
+  "caughtAt": "2024-07-04, 14:25:31",
   "tank": {
-    "arduinoId": 5,
+    "arduinoId": 2,
     "gateway": {
-      "arduinoId": 2
+      "arduinoId": 1
     }
   }
 }

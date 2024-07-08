@@ -25,7 +25,9 @@ export async function seed() {
     data: {
       level: 100,
       rssi: -30,
-      caughtAt: new Date("July 6, 2024 09:31:00"),
+      rsn: 40,
+      frequencyError: 5,
+      caughtAt: "2024-06-07, 09:10:35",
       tank: { connect: { arduinoId: 2 } },
     },
   });
@@ -34,7 +36,9 @@ export async function seed() {
     data: {
       level: 99,
       rssi: -87,
-      caughtAt: new Date("July 6, 2024 09:35:31"),
+      rsn: 34,
+      frequencyError: 8,
+      caughtAt: "2024-06-07, 09:11:37",
       tank: { connect: { arduinoId: 2 } },
     },
   });
@@ -43,7 +47,9 @@ export async function seed() {
     data: {
       level: 96,
       rssi: -52,
-      caughtAt: new Date("July 6, 2024 09:40:07"),
+      rsn: 23,
+      frequencyError: 2,
+      caughtAt: "2024-06-07, 09:12:42",
       tank: { connect: { arduinoId: 2 } },
     },
   });
