@@ -52,20 +52,20 @@ void loop() {
             int contentLength = LoRa.read();
 
             if (tankId == localId) {
-                String content = "";
-                while (LoRa.available()) {
-                    content += (char)LoRa.read();
+                if (mode == 1) {
+                    String tankLevel = readTankLevel();
+                    sendPacket(0, localId, gatewayId, tankLevel);
                 }
 
-                if (contentLength == content.length()) {
-                    if (mode == 1) {
-                        String tankLevel = readTankLevel();
-                        sendPacket(0, localId, gatewayId, tankLevel);
+                if (mode == 2) {
+                    String content = "";
+                    while (LoRa.available()) {
+                        content += (char)LoRa.read();
                     }
 
-                    if (mode == 2) {
+                    if (contentLength == content.length()) {
                         Serial.println("Dormindo zzzzzz...");
-                        setTimer(sleepTime.toInt());
+                        setTimer(content.toInt());
                         Serial.println("Acordei :)");
                     }
                 }
