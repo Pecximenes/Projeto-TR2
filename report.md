@@ -62,7 +62,7 @@ Com base nisso, o esquema do projeto segue os seguintes passos:
     - O gateway envia o pacote com 5 informações: o tipo da mensagem (SLEEP), o id do remetente (gateway), o id do destinatário (nó), o tamanho do conteúdo do pacote e o tempo de suspensão do nó.
   - O gateway faz o calculo de quanto tempo ele consegue ficar suspenso até o próximo ciclo de requisição de 1 em 1 hora.
   - O gateway suspende até o próximo ciclo.
-![Máquina de Estados do Gateway](path_to_image)
+![Máquina de Estados do Gateway](assets/maq-est-gateway.png)
 - Nó:
   - Assim que o nó acordar, ele deve escutar o canal.
   - Quando receber algo, o nó verifica se é para ele a mensagem, se não for ele ignora.
@@ -70,7 +70,7 @@ Com base nisso, o esquema do projeto segue os seguintes passos:
   - Caso seja para ele a requisição, ele verifica qual é o tipo da mensagem e faz os seguintes passos:
       - Caso o tipo do pacote seja POLL, ele faz o cálculo da distancia usando o ultrassom e devolve para o remetente (gateway).
       - Caso o tipo do pacote seja SLEEP, ele suspende pelo tempo passado na mensagem.
-![Máquina de Estados do Nó](path_to_image)
+![Máquina de Estados do Nó](assets/maq-est-no.png)
 
 ## Melhorias
 
