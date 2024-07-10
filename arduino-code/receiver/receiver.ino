@@ -8,6 +8,7 @@ const int destIdArraySize = 1;
 const int destIdArray[destIdArraySize] = {2};
 
 const unsigned int timeout = 640000;
+const unsigned int timeoutPoll = 15000;
 
 
 void setup() {
@@ -47,14 +48,17 @@ void loop() {
     unsigned long startTimeGateway = millis();
     for (int i = 0; i < destIdArraySize; i++) {
         unsigned long startTimeTank = millis();
-        Serial.println("Fazendo poll para sender de id " + String(destIdArray[i]));
-        sendPacket(1, localId, destIdArray[i]);
-        bool packetSent = waitForData();
-        if (packetSent) {
-            Serial.println("Mandando sender de id " + String(destIdArray[i]) + " dormir");
-            unsigned long endTimeTank = millis();
-            sendPacket(2, localId, destIdArray[i], String(timeout - (endTimeTank - startTimeTank)));
+
+        bool packetSent = false;
+        while ((millis() - startTimeTank) < timeoutPoll && !packetSent) {
+            Serial.println("Fazendo poll para sender de id " + String(destIdArray[i]));
+            sendPacket(1, localId, destIdArray[i]);
+            packetSent =  waitForData();
         }
+    
+        Serial.println("Mandando sender de id " + String(destIdArray[i]) + " dormir");
+        unsigned long endTimeTank = millis();
+        sendPacket(2, localId, destIdArray[i], String(timeout - (endTimeTank - startTimeTank)));
     }
 
     Serial.println("Dormindo zzzzzzz...");
