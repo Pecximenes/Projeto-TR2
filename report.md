@@ -50,34 +50,40 @@ O papel do gateway é orquestrar o nó (ou conjunto de nós), utilizando um sist
 Com base nisso, o esquema do projeto segue os seguintes passos:
 
 - Gateway:
-  - O gateway acorda e espera 10 segundos para todos os outros dispositivos acordarem.
+  - O gateway acorda e espera 8 segundos para todos os outros dispositivos acordarem.
   - O gateway inicia um cronometro para analisar quanto tempo vai durar para ele coletar todos os dados.
-  - Mensagem inicial, o gateway vai começar a coleta de dados seguindo a ordem crescente de id's dos nós, começando com o nó de id 1.
-    - Ele deve mandar um pacote com 2 informações: Seu id e o id do destinatario
-    - Ele vai ouvir o canal, caso não receba nada em 5 segundos, ele vai tentar novamente, no total são 3 tentativas.
-    - Ele deve receber uma mensagem com 3 informações (adicionar também os dados extras para analise): o id do remetente, o id do destinatário, o nível do tanque codificado (usar aquela divisão feita em tr1 - CRC).
-    - Caso a mensagem tenha algum erro, ele deve reenviar a mensagem pedindo novamente o resultado.
-    - Depois de receber as informações de todos, ele vai enviar calcular o tempo que o nó deve suspender até iniciar o próximo ciclo e envia para o mesmo.
-  - Suspender o gateway com base no cronometro, fazendo a contagem acontecer de 1 em 1 hora.
+  - Mensagem inicial, o gateway vai começar a coleta de dados seguindo a ordem que os nós estão declarados na tabela.
+    - Inicia o cronometro para analisar quanto tempo vai demorar para coletar o dado do nó.
+    - Ele deve mandar um pacote com 3 informações: o tipo de pacote (POLL), id do remetente (gateway) e o id do destinatario (nó).
+    - Ele deve receber um pacote com 5 informações: o tipo da mensagem (DATA), o id do remetente (nó), o id do destinatário (gateway), o tamanho do conteúdo do pacote e o nível do tanque.
+        - Caso a mensagem tenha algum erro, ele deve reenviar a mensagem pedindo novamente o resultado.
+        - Caso ele não receba nenhum pacote no intervalo de 15 segundos, ele pula o nó e começa a requisição com o próximo nó.
+        - Caso ele receba a mensagem corretamente e dentro do prazo, ele envia os dados do nível do tanque, RSSI, SNR e o tempo local de captura da requisição ao servidor.
+    - O gateway envia o pacote com 5 informações: o tipo da mensagem (SLEEP), o id do remetente (gateway), o id do destinatário (nó), o tamanho do conteúdo do pacote e o tempo de suspensão do nó.
+  - O gateway faz o calculo de quanto tempo ele consegue ficar suspenso até o próximo ciclo de requisição de 1 em 1 hora.
+  - O gateway suspende até o próximo ciclo.
+![Máquina de Estados do Gateway](path_to_image)
 - Nó:
-  - Assim que o nó acordar, ele deve ficar ouvindo o canal.
-  - Quando receber algo, e verifica se é para ele a mensagem, se não for ele ignora.
-  - Caso seja para ele o pedido, ele faz o cálculo da distancia usando o ultrassom e devolve para o remetente (gateway).
-  - Ele aguarda mensagem para dormir e asimm que recebe ele suspende pelo tempo passado na mensagem.
+  - Assim que o nó acordar, ele deve escutar o canal.
+  - Quando receber algo, o nó verifica se é para ele a mensagem, se não for ele ignora.
+  - Ele deve receber um pacote com 3 ou 5 informações: o tipo de pacote (PULL ou SLEEP), id do remetente (gateway) e o id do destinatario (nó), o tamanho do conteúdo do pacote e o tempo de suspensão do nó (as duas últimas informações são enviadas somente no pacote do tipo SLEEP).
+  - Caso seja para ele a requisição, ele verifica qual é o tipo da mensagem e faz os seguintes passos:
+      - Caso o tipo do pacote seja POLL, ele faz o cálculo da distancia usando o ultrassom e devolve para o remetente (gateway).
+      - Caso o tipo do pacote seja SLEEP, ele suspende pelo tempo passado na mensagem.
+![Máquina de Estados do Nó](path_to_image)
 
 ## Melhorias
 
 Uma adaptação que pode ser feita no sistema, para deixar o algoritmo mais dinâmico, é a retirada ou a atualização programada da tabela de endereçamento do nós utilizada pelo gateway. Uma forma para implementar essa estrutura seria acrescentar alguns passos no início do ciclo:
 
 - Gateway:
-  - O gateway reserva um intervalo para detectar se há um nó utilizando o canal que ele ainda não tem conhecimento (ele envia um pacote ao canal informando que está a procura de novos nós e da duração desse intervalo).
-  - Assim que encontra um pacote de um nó desconhecido no canal, o gateway lê as informações do pacote para adicionar o nó à tabela de endereçamento. Depois envia uma confirmação que o nó foi adicionado na tabela.
-  - Se o gateway lê um pacote com informações de um nó já adicionado na tabela, ele envia um ack dizendo que o nó já está cadastrado na tabela.
-  - Caso o nó não envie informação para o gateway quando solitidado, em um intervalo pré-estabelecido de ciclos, ele é retirado da tabela de endereçamento (para retornar à tabela, o nó deverá enviar suas informações para o gateway durante o intervalo de detecção de novos nós)
+  - [CREATE] O gateway utiliza quase todo o intervalo inicial, onde ele espera o nó acordar, para buscar novos nós. Ele envia um pacote do tipo DISCOVERY ao canal informando que está a procura de novos nós. O intervalo desse processo acaba 1 segundo antes do ciclo começar.
+      - Assim que o gateway envia o pacote, ele começa a escutar o canal para ver se tem um nó novo no pedaço. Se ele encontrar uma resposta de um nó desconhecido no canal, o gateway lê as informações do pacote para adicionar o nó à tabela de endereçamento. Depois envia uma confirmação que o nó foi adicionado na tabela.
+  - [DELETE] Caso o nó não responda a requisição de POLL do gateway quando solitidado, ele é retirado da tabela de endereçamento (para retornar à tabela, o nó deverá enviar suas informações para o gateway durante o intervalo de detecção de novos nós).
 - Nó:
-  - Sendo um nó recém-criado, ele não suspende enquanto não estabelecer contato com o gateway.
-  - Assim que recebe a informação da abertura do intervalo, o nó envia um pacote com suas credenciais e aguarda a resposta do gateway.
-  - Se a resposta do gateway não for para este nó, ele envia novamente assim que o gateway finaliza o envio do pacote.
-  - Se a resposta do gateway for para este nó, ele para de tentar utilizar o canal durante o intervalo.
-  - Esse processo vai acontecendo de forma que os nós vão competindo pelo canal e ganha quem conseguir "falar mais alto", dessa forma o intervalo de cadastro é dividido em partes onde em cada uma delas um nó é adicionado.
-  - Se o nó não receber um pedido de requisição dos dados do gateway no ciclo. Ele vai enviar uma mensagem de cadastro no ciclo seguinte.
+  - [CREATE] Sendo um nó recém-criado, ele não suspende enquanto não estabelecer contato com o gateway.
+      - Assim que recebe a informação da abertura do intervalo de DISCOVERY, o nó envia um pacote com suas credenciais e aguarda a resposta do gateway.
+      - Se a resposta do gateway não for para este nó, ele aguarda até a proxima rodada de DISCOVERY (que pode acontecer no mesmo ciclo ou somente no próximo, depende do limite do intervalo) e envia novamente as suas credenciais.
+      - Se a resposta do gateway for para este nó, ele para de tentar utilizar o canal durante o intervalo.
+      - Esse processo vai acontecendo de forma que os nós vão competindo pelo canal e ganha quem conseguir "falar mais alto", dessa forma o intervalo de cadastro é dividido em partes onde em cada uma delas um nó é adicionado.
+  - [DELETE] Se o nó não receber um pedido de requisição dos dados do gateway (POLL) no ciclo. Ele vai resetar ao padrão de fábrica e enviar uma mensagem de cadastro no ciclo seguinte.
