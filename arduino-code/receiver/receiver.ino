@@ -47,9 +47,9 @@ void loop() {
 
     unsigned long startTimeGateway = millis();
     for (int i = 0; i < destIdArraySize; i++) {
-        unsigned long startTimeTank = millis();
 
         bool packetSent = false;
+        unsigned long startTimeTank = millis();
         while ((millis() - startTimeTank) < timeoutPoll && !packetSent) {
             Serial.println("Fazendo poll para sender de id " + String(destIdArray[i]));
             sendPacket(1, localId, destIdArray[i]);
